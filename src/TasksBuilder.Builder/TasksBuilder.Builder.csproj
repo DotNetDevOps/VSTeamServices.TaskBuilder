@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Nuget.Config" />
-    <None Include="nuget.nuspec" />
+    <None Include="S-Innovations.VSTeamServices.TasksBuilder.Builder.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

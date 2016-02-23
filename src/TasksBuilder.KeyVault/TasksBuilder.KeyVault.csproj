@@ -95,7 +95,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Nuget.Config" />
-    <None Include="nuget.nuspec" />
+    <None Include="S-Innovations.VSTeamServices.TasksBuilder.KeyVault.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
