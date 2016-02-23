@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Nuget.Config" />
     <None Include="nuget.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>

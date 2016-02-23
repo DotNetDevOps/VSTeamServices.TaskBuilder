@@ -77,6 +77,7 @@
     <None Include="..\..\default.licenseheader">
       <Link>default.licenseheader</Link>
     </None>
+    <None Include="Nuget.Config" />
     <None Include="nuget.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
