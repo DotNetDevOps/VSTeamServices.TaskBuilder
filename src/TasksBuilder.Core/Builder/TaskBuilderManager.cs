@@ -53,6 +53,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             json.InstanceNameFormat = "";
 
 
+            if(json.FriendlyName.Length > 40)
+            {
+                throw new ArgumentException($"Task Title can only be up to 40chars : Change {json.FriendlyName}");
+            }
+
 
             var programOptionsType = assembly.DefinedTypes.SingleOrDefault(t => Attribute.IsDefined(t, typeof(EntryPointAttribute)));
             json.InstanceNameFormat = programOptionsType.GetCustomAttribute<EntryPointAttribute>().InstanceFormat;
