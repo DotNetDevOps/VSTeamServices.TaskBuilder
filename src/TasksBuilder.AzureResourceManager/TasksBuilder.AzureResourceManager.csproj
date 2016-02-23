@@ -92,7 +92,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Nuget.Config" />
-    <None Include="S-Innovations.VSTeamServices.TasksBuilder.AzureResourceManager.nuspec" />
+    <None Include="TasksBuilder.AzureResourceManager.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

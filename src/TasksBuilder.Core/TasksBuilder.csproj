@@ -79,7 +79,7 @@
       <Link>default.licenseheader</Link>
     </None>
     <None Include="Nuget.Config" />
-    <None Include="S-Innovations.VSTeamServices.TasksBuilder.nuspec" />
+    <None Include="TasksBuilder.AzureResourceManager.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
