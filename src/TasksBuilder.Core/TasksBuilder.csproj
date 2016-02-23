@@ -7,8 +7,8 @@
     <ProjectGuid>{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SInnovations.VSTeamServices.TasksBuilder.Core</RootNamespace>
-    <AssemblyName>S-Innovations.VSTeamServices.TasksBuilder.Core</AssemblyName>
+    <RootNamespace>SInnovations.VSTeamServices.TasksBuilder</RootNamespace>
+    <AssemblyName>S-Innovations.VSTeamServices.TasksBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

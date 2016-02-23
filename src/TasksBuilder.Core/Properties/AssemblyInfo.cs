@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("S-Innovations.VSTeamServices.TasksBuilder.Core")]
+[assembly: AssemblyTitle("S-Innovations.VSTeamServices.TasksBuilder")]
 [assembly: AssemblyDescription("The Core Library (all public interfaces and extension points)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]
-[assembly: AssemblyProduct("TasksBuilder.Core")]
+[assembly: AssemblyProduct("S-Innovations.VSTeamServices.TasksBuilder")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

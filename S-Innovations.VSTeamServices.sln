@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TasksBuilder", "TasksBuilder", "{C49216BC-8663-4FB8-96A3-1B24B334A594}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksBuilder.Core", "src\TasksBuilder.Core\TasksBuilder.Core.csproj", "{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksBuilder", "src\TasksBuilder.Core\TasksBuilder.csproj", "{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksBuilder.Builder", "src\TasksBuilder.Builder\TasksBuilder.Builder.csproj", "{CE31FE1B-43B5-4C78-9D3D-7AA7B59F0AF7}"
 EndProject
