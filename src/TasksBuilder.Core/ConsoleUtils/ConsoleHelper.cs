@@ -14,6 +14,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
     {
         public static string[] MoveBoolsLast(string[] args)
         {
+            if(args.Length == 0)
+            {
+                return args;
+            }
+
             var bools = new List<string>();
             var rest = new List<string>();
             for (var i = 1; i < args.Length; i++)
