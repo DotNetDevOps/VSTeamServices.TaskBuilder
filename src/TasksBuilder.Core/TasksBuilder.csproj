@@ -69,6 +69,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceTypes\ITaskInputFactory.cs" />
     <Compile Include="ResourceTypes\Tags.cs" />
+    <Compile Include="Builder\TaskBuilderManager.cs" />
     <Compile Include="Tasks\TaskExecutionConverter.cs" />
     <Compile Include="Tasks\TaskGeneratorResult.cs" />
     <Compile Include="Tasks\TaskHelper.cs" />

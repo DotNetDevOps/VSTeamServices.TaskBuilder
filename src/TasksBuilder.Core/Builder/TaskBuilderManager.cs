@@ -15,7 +15,7 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 {
-    public class TaskBuilder
+    internal class TaskBuilder
     {
         public static void BuildTask(string pathToDll)
         {
@@ -92,7 +92,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             AppDomain.CurrentDomain.AssemblyResolve -= loader;
         }
 
-        public static string PSType(string type)
+        private static string PSType(string type)
         {
 
             switch (type)

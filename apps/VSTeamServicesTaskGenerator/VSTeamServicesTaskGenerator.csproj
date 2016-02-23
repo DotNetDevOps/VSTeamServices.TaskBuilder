@@ -60,10 +60,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TasksBuilder.Builder\TasksBuilder.Builder.csproj">
-      <Project>{ce31fe1b-43b5-4c78-9d3d-7aa7b59f0af7}</Project>
-      <Name>TasksBuilder.Builder</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\TasksBuilder.Core\TasksBuilder.csproj">
       <Project>{274c966b-3f90-43c8-9f67-8eae1fcc8e2d}</Project>
       <Name>TasksBuilder</Name>
