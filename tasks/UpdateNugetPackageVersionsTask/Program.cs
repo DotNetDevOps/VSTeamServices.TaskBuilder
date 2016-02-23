@@ -14,9 +14,9 @@ using CommandLine;
 using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 
-[assembly: AssemblyInformationalVersion("1.0.18")]
+[assembly: AssemblyInformationalVersion("1.0.19")]
 [assembly: AssemblyTitle("Update Nuget Packages Versions")]
-[assembly: AssemblyDescription("Create or Update Azure AppService using Azure Resource Manager")]
+[assembly: AssemblyDescription("After building nuget packages that references eachother, the versions can be updated to match the references nuget packages.")]
 [assembly: AssemblyCompany("S-Innovations /v Poul Kjeldager Sørensen")]
 [assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
