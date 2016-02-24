@@ -41,8 +41,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         public Func<TOptions, TResourceSource> TemplateProvider { get; private set; }
 
         public ArmTemplateDeployment(
-            Func<TOptions, ServiceEndpoint> endPointProvider, 
-            Func<TOptions,TResourceSource> templateProvider) : base(endPointProvider)
+            Func<TOptions,TResourceSource> templateProvider,
+            Func<TOptions, ServiceEndpoint> endPointProvider = null) : base(endPointProvider)
         {
             TemplateProvider = templateProvider;
         }
@@ -61,14 +61,15 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
 
-        public ArmTemplateDeployment(Func<T, ServiceEndpoint> endPointProvider)
+        public ArmTemplateDeployment(Func<T, ServiceEndpoint> endPointProvider = null)
         {
-            EndpointProvider = endPointProvider;
             ResourceGroupOptions = new ResourceGroupOptions();
+            EndpointProvider = endPointProvider ?? ((o) => ResourceGroupOptions.ConnectedServiceName);
+           
         }
         public JObject Output { get; set; }
         public JObject Parameters { get; set; }
-        public ResourceGroupOptions ResourceGroupOptions { get; private set; }
+        public ResourceGroupOptions ResourceGroupOptions { get; set; }
 
 
         public abstract JObject LoadTemplateParameters();
@@ -166,6 +167,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         {
 
             var template = LoadTemplate(options);
+
+
+            if (ResourceGroupOptions.CreateTemplatesOnly)
+            {
+
+                return;
+            }
 
             Console.WriteLine("Deploying Resource Group: ");
             Console.WriteLine("\tParameters:");
