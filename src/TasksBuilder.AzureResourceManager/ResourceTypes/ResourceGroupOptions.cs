@@ -15,6 +15,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
             Tags = new Dictionary<string, string>();
         }
 
+        [Option("CreateTemplatesOnly")]
+        [Display(GroupName = "TemplateDeploymentOptions", Order = 999, Description = "Create Template Files only but do not deploy", Name = "Create Templates Only")]
+        public bool CreateTemplatesOnly { get; set; }
+
 
         [VisibleRule("CreateTemplatesOnly = false")]
         // [Required]
@@ -49,10 +53,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
             ShortName = "ResourceDeploymentTags")]
         public Dictionary<string, string> Tags { get; set; }
 
-        [Option("CreateTemplatesOnly")]
-        [Display(GroupName = "TemplateDeploymentOptions", Description = "Create Template Files only but do not deploy", Name = "Create Templates Only")]
-        public bool CreateTemplatesOnly { get; set; }
-
+     
         [VisibleRule("CreateTemplatesOnly = true")]
         [Option("TemplateOutputPath")]
         [Display(GroupName = "TemplateDeploymentOptions", Description = "TemplateOutputPath", Name = "TemplateOutputPath")]

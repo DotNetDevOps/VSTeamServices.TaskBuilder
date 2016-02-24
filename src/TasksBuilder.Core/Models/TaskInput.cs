@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.Models
@@ -24,5 +25,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Models
         public JObject Options { get; set; }
 
         public TaskInputProperties Properties { get; set; }
+
+        [JsonIgnore]
+        public int Order { get; set; }
     }
 }

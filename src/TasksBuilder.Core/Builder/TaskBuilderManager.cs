@@ -62,8 +62,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             var programOptionsType = assembly.DefinedTypes.SingleOrDefault(t => Attribute.IsDefined(t, typeof(EntryPointAttribute)));
             json.InstanceNameFormat = programOptionsType.GetCustomAttribute<EntryPointAttribute>().InstanceFormat;
             var result = TaskHelper.GetTaskInputs(programOptionsType);
-
-            json.Inputs = result.Inputs;
+           
+            json.Inputs = result.Inputs.OrderByDescending(k=>k.Order).ToArray();
             json.Groups = result.Groups;
 
 
