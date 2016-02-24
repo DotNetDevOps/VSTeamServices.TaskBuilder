@@ -18,6 +18,29 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 {
+    public class ArmTemplateDeployment<TOptions, TResourceSource> : ArmTemplateDeployment<TOptions>
+        where TResourceSource : ResourceSource
+        where TOptions : class
+    {
+        public Func<TOptions, TResourceSource> TemplateProvider { get; private set; }
+
+        public ArmTemplateDeployment(
+            Func<TOptions, ServiceEndpoint> endPointProvider, 
+            Func<TOptions,TResourceSource> templateProvider) : base(endPointProvider)
+        {
+          
+        }
+
+        public override JObject LoadTemplate(TOptions options)
+        {
+            return TemplateProvider(options);
+        }
+        public override JObject LoadTemplateParameters()
+        {
+            return TemplateProvider(null);
+        }
+    }
+
     public abstract class ArmTemplateDeployment<T> : IConsoleExecutor<T>, ITaskInputFactory, IConsoleReader<T>
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
