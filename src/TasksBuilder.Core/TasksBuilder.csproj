@@ -53,6 +53,7 @@
     <Compile Include="Attributes\GroupAttribute.cs" />
     <Compile Include="Attributes\ServiceEndpointAttribute.cs" />
     <Compile Include="Attributes\VisibleRuleAttribute.cs" />
+    <Compile Include="ConsoleUtils\ArgsExtensions.cs" />
     <Compile Include="ConsoleUtils\ConsoleHelper.cs" />
     <Compile Include="ConsoleUtils\DefaultConsoleReader`1.cs" />
     <Compile Include="ConsoleUtils\IConsoleExecutor.cs" />
