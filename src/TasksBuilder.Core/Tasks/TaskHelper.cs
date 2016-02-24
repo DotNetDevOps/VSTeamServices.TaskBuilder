@@ -91,7 +91,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             {
                 case "System.String":
                     return "string";
-                case "SInnovations.VSTS.GenerateBuildTaskFiles.Models.ServiceEndpoint":
+                case "SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes.ServiceEndpoint":
                     return "connectedService:AzureRM";
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":

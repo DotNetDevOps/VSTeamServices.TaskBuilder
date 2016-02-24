@@ -10,7 +10,7 @@ using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.Builder;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 
-[assembly: AssemblyInformationalVersion("1.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.1")]
 [assembly: AssemblyTitle("VisualStudio TeamServices Task Generator")]
 [assembly: AssemblyDescription("Generate Visual Studio Team Services Tasks using S-Innovations Task Library")]
 [assembly: AssemblyCompany("S-Innovations /v Poul Kjeldager Sørensen")]
