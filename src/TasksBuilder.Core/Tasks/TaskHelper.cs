@@ -56,7 +56,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                     GroupName = d?.GroupName,
                     Required = i?.Required ?? (r == null ? false : true),
                     VisibleRule = property.GetCustomAttribute<VisibleRuleAttribute>()?.VisibleRule,
-                    Order = d?.Order ?? 0
+                    Order = d?.GetOrder() ?? 0
                 };
                 if (defaultTask.Name?.Contains(" ") ?? false)
                 {
