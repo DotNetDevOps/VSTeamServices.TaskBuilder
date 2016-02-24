@@ -21,8 +21,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
 
 
         [VisibleRule("CreateTemplatesOnly = false")]
-        // [Required]
-        [Display(Name = "Service Principal", ShortName = "ConnectedServiceName", ResourceType = typeof(ServiceEndpoint), Description = "Azure Service Principal to obtain tokens from")]
+        [Display(Name = "Service Principal", GroupName = "TemplateDeploymentOptions", ShortName = "ConnectedServiceName", ResourceType = typeof(ServiceEndpoint), Description = "Azure Service Principal to obtain tokens from")]
         public ServiceEndpoint ConnectedServiceName { get; set; }
 
         [VisibleRule("CreateTemplatesOnly = false")]
