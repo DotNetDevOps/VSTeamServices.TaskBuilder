@@ -10,6 +10,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
 {
     public static class DictionaryMergeExtensions
     {
+        
         public static string CalculateMD5Hash(string input)
         {
             // step 1, calculate MD5 hash from input
@@ -50,15 +51,15 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
             return true;
 
         }
-        public static void SetTags(this JObject template, IDictionary<string, string> tagsToAdd)
+        public static void SetTags(this JObject template, IDictionary<string, string> tagsToAdd, int resourceIndex=0)
         {
             if (tagsToAdd.Any())
             {
                 Console.WriteLine("Template Tags: " + string.Join(" ", tagsToAdd.Keys));
 
-                var tags = template.SelectToken("resources[0].tags") as JObject;
+                var tags = template.SelectToken($"resources[{resourceIndex}].tags") as JObject;
                 if (tags == null)
-                    (template.SelectToken("resources[0]") as JObject).Add("tags", tags = new JObject());
+                    (template.SelectToken($"resources[{resourceIndex}]") as JObject).Add("tags", tags = new JObject());
 
                 foreach (var tag in tagsToAdd)
                 {
@@ -72,4 +73,6 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
             template.SetTags(tagsToAdd);
         }
     }
+
+    
 }

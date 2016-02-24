@@ -18,6 +18,22 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 {
+
+    public class ResourceTags : ITemplateAction
+    {
+        public IDictionary<string, string> Tags { get; set; }
+        public ResourceTags(IDictionary<string,string> tags)
+        {
+            Tags = tags;
+        }
+        public Task TemplateActionAsync(JObject obj)
+        {
+             obj.SetTags(Tags);
+
+            return Task.FromResult(0);
+        }
+    }
+
     public class ArmTemplateDeployment<TOptions, TResourceSource> : ArmTemplateDeployment<TOptions>
         where TResourceSource : ResourceSource
         where TOptions : class
