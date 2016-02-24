@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
 {
@@ -48,6 +49,27 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
                 dicts.Add(d);
             return true;
 
+        }
+        public static void SetTags(this JObject template, IDictionary<string, string> tagsToAdd)
+        {
+            if (tagsToAdd.Any())
+            {
+                Console.WriteLine("Template Tags: " + string.Join(" ", tagsToAdd.Keys));
+
+                var tags = template.SelectToken("resources[0].tags") as JObject;
+                if (tags == null)
+                    (template.SelectToken("resources[0]") as JObject).Add("tags", tags = new JObject());
+
+                foreach (var tag in tagsToAdd)
+                {
+                    Console.WriteLine($"Adding Tag: {tag.Key}={tag.Value}");
+                    tags.Add(tag.Key, tag.Value);
+                }
+            }
+        }
+        public static void AddToArmTemplate(this IDictionary<string, string> tagsToAdd, JObject template)
+        {
+            template.SetTags(tagsToAdd);
         }
     }
 }
