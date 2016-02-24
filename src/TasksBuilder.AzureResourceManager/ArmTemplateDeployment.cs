@@ -53,7 +53,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         }
         public override JObject LoadTemplateParameters()
         {
-            return TemplateProvider(null);
+            return LoadTemplate(null).SelectToken("parameters") as JObject ?? new JObject();
         }
     }
 
