@@ -28,7 +28,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             Func<TOptions, ServiceEndpoint> endPointProvider, 
             Func<TOptions,TResourceSource> templateProvider) : base(endPointProvider)
         {
-          
+            TemplateProvider = templateProvider;
         }
 
         public override JObject LoadTemplate(TOptions options)
