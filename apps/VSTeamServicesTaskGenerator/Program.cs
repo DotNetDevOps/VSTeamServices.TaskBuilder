@@ -27,8 +27,7 @@ namespace VSTeamServicesTaskGenerator
     [EntryPoint("Creating VSTS Task")]
     public class ProgramOptions
     {
-        [Display(Description = "The path to the generated task", Name = "Task Path", ResourceType =typeof(GlobPath))]
-        [Option("Path")]
+        [Display(Description = "The path to the generated task", Name = "Task Path", ShortName = "Path", ResourceType =typeof(GlobPath))]
         public GlobPath Paths { get; set; }
     }
 
