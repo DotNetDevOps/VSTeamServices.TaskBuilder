@@ -37,7 +37,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         /// </summary>
         public string SecretName { get { return Options.SecretName; } }
         public string VaultName { get { return Options.VaultName; } }
-        public IDictionary<string,string> Tags { get { return Options.Tags; } }
+        public Dictionary<string,string> Tags { get { return Options.Tags; } }
 
         /// <summary>
         /// Access token for the keyvault created on parsing.
