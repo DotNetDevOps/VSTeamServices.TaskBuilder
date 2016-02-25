@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Attributes\EntryPointAttribute.cs" />
     <Compile Include="Attributes\GroupAttribute.cs" />
+    <Compile Include="Attributes\ResourceTypeAttribute.cs" />
     <Compile Include="Attributes\ServiceEndpointAttribute.cs" />
     <Compile Include="Attributes\VisibleRuleAttribute.cs" />
     <Compile Include="ConsoleUtils\ArgsExtensions.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Models\TaskJson.cs" />
     <Compile Include="Models\Version.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceTypes\Glob.cs" />
     <Compile Include="ResourceTypes\ITaskInputFactory.cs" />
     <Compile Include="ResourceTypes\Tags.cs" />
     <Compile Include="Builder\TaskBuilderManager.cs" />

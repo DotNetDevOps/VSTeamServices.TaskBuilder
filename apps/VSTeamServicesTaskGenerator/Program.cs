@@ -9,6 +9,7 @@ using CommandLine;
 using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.Builder;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
 
 [assembly: AssemblyInformationalVersion("1.0.2")]
 [assembly: AssemblyTitle("VisualStudio TeamServices Task Generator")]
@@ -26,9 +27,9 @@ namespace VSTeamServicesTaskGenerator
     [EntryPoint("Creating VSTS Task")]
     public class ProgramOptions
     {
-        [Display(Description = "The path to the generated task", Name = "Task Path")]
+        [Display(Description = "The path to the generated task", Name = "Task Path", ResourceType =typeof(GlobPath))]
         [Option("Path")]
-        public string Path { get; set; }
+        public GlobPath Paths { get; set; }
     }
 
     class Program
@@ -37,8 +38,8 @@ namespace VSTeamServicesTaskGenerator
         {
             var options = ConsoleHelper.ParseAndHandleArguments<ProgramOptions>("Generating Task", args);
 
-
-            TaskBuilder.BuildTask(options.Path);
+            foreach(var path in options.Paths.MatchedFiles())
+                TaskBuilder.BuildTask(path);
 
         }
     }

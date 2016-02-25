@@ -86,19 +86,24 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
             return result;
         }
+        private static string GlobPathString = typeof(GlobPath).ToString();
         private static string NewMethod(Type property)
         {
             switch (property.ToString())
             {
                 case "System.String":
                     return "string";
-                case "SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes.ServiceEndpoint":
-                    return "connectedService:AzureRM";
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":
                     return "boolean";
-
+              
             };
+
+            var type = property.GetCustomAttribute<ResourceTypeAttribute>()?.TaskInputType;
+            if (!string.IsNullOrEmpty(type))
+            {
+                return type;
+            }
 
             throw new NotImplementedException(property.ToString());
         }

@@ -17,7 +17,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 {
     internal class TaskBuilder
     {
-        public static void BuildTask(string pathToDll)
+        public static JObject BuildTask(string pathToDll)
         {
             ResolveEventHandler loader = delegate (object source, ResolveEventArgs e)
             {
@@ -82,8 +82,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore
             });
-
-            Console.WriteLine(JObject.FromObject(json, serializer).ToString(Newtonsoft.Json.Formatting.Indented));
+            var obj = JObject.FromObject(json, serializer);
+            Console.WriteLine(obj.ToString(Newtonsoft.Json.Formatting.Indented));
 
             var outputDir = Path.GetDirectoryName(pathToDll);
             using (var writer = new StreamWriter(File.Open(Path.Combine(outputDir, "OauthBroker.ps1"), FileMode.Create)))
@@ -91,26 +91,25 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 WriteOauthBrokerPowershell(writer, Path.GetFileName(pathToDll), json.Inputs);
                 writer.Flush();
             }
-            File.WriteAllText(Path.Combine(outputDir, "task.json"), JObject.FromObject(json, serializer).ToString(Newtonsoft.Json.Formatting.Indented));
+            File.WriteAllText(Path.Combine(outputDir, "task.json"), obj.ToString(Newtonsoft.Json.Formatting.Indented));
 
 
             AppDomain.CurrentDomain.AssemblyResolve -= loader;
+            return obj;
         }
-
+        private const string PSStringType = "String";
         private static string PSType(string type)
         {
 
             switch (type)
             {
-                case "string":
-                    return "String";
-                case "connectedService:AzureRM":
-                    return "String";
+                case "pickList":
                 case "boolean":
                 case "bool":
-                    return "String";
-                case "pickList":
-                    return "String";
+                case "string":                 
+                case "connectedService:AzureRM":
+                case "filePath":
+                    return PSStringType;             
             }
 
             throw new NotImplementedException(type);
