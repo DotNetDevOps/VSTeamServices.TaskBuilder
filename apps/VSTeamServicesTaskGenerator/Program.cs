@@ -11,7 +11,7 @@ using SInnovations.VSTeamServices.TasksBuilder.Builder;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
 
-[assembly: AssemblyInformationalVersion("1.0.3")]
+[assembly: AssemblyInformationalVersion("1.0.4")]
 [assembly: AssemblyTitle("VisualStudio TeamServices Task Generator")]
 [assembly: AssemblyDescription("Generate Visual Studio Team Services Tasks using S-Innovations Task Library")]
 [assembly: AssemblyCompany("S-Innovations /v Poul Kjeldager Sørensen")]
@@ -31,9 +31,9 @@ namespace VSTeamServicesTaskGenerator
         public GlobPath Paths { get; set; }
     }
 
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var options = ConsoleHelper.ParseAndHandleArguments<ProgramOptions>("Generating Task", args);
 

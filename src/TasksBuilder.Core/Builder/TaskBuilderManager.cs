@@ -142,6 +142,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 var input = inputs[i];
                 switch (input.Type)
                 {
+                    case "filePath":
                     case "string":
                     case "pickList":
                         writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',			('\"'+${input.Name}+'\"'))  }}");
