@@ -14,21 +14,41 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
     public class KeyVaultOutput<T> : DefaultConsoleReader<KeyVaultOptions>, IConsoleReader<T>
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
+
+        /// <summary>
+        /// Parameter less constructor for generating Options.
+        /// </summary>
         public KeyVaultOutput()
         {
-
+       
         }
 
+        /// <summary>
+        /// Runtime constructor
+        /// </summary>
+        /// <param name="endPointProvider"></param>
         public KeyVaultOutput(Func<T, ServiceEndpoint> endPointProvider)
         {
             EndpointProvider = endPointProvider;
         }
-        public override KeyVaultOptions Options
-        {
-            get; set;
-        }
+       
+        /// <summary>
+        /// Properties accessible.
+        /// </summary>
+        public string SecretName { get { return Options.SecretName; } }
+        public string VaultName { get { return Options.VaultName; } }
+        public IDictionary<string,string> Tags { get { return Options.Tags; } }
+
+        /// <summary>
+        /// Access token for the keyvault created on parsing.
+        /// </summary>
 
         protected string AccessToken { get; set; }
+
+        public bool IsPresent()
+        {
+            return !(string.IsNullOrEmpty(VaultName) || string.IsNullOrEmpty(SecretName));
+        }
 
         public void SetSecret(string value, Dictionary<string, string> tags = null, string contentType = null, DateTime? notbefore = null)
         {
@@ -43,12 +63,6 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         {
             AccessToken = EndpointProvider(options).GetToken("https://vault.azure.net");
         }
-
-        public bool IsPresent()
-        {
-            return !(string.IsNullOrEmpty(Options.VaultName) || string.IsNullOrEmpty(Options.SecretName));
-        }
-
-
+        
     }
 }
