@@ -154,6 +154,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             {
                 case "bool":
                     return "boolean";
+                case "int":
+                    return "string";
                 case "string":
                 case "pickList":
                     return type;
