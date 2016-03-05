@@ -56,15 +56,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
             if (tagsToAdd.Any())
             {
                 Console.WriteLine("Template Tags: " + string.Join(" ", tagsToAdd.Keys));
-
-                var tags = template.SelectToken($"resources[{resourceIndex}].tags") as JObject;
-                if (tags == null)
-                    (template.SelectToken($"resources[{resourceIndex}]") as JObject).Add("tags", tags = new JObject());
-
-                foreach (var tag in tagsToAdd)
+                foreach (JObject resource in template.SelectToken("resources"))
                 {
-                    Console.WriteLine($"Adding Tag: {tag.Key}={tag.Value}");
-                    tags.Add(tag.Key, tag.Value);
+                    var tags = resource.SelectToken($"tags") as JObject;
+                    if (tags == null)
+                        (resource).Add("tags", tags = new JObject());
+
+                    foreach (var tag in tagsToAdd)
+                    {
+                        Console.WriteLine($"Adding Tag: {tag.Key}={tag.Value}");
+                        tags.Add(tag.Key, tag.Value);
+                    }
                 }
             }
         }

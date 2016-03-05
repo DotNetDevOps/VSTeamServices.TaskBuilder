@@ -149,7 +149,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                         break;
                     case "boolean":
                         writer.WriteLine($"$arg{i} =  if (!${input.Name})				{{ '' }} else {{ '--{input.Name}'}}");
-
+                        break;
+                    default:
+                        Console.WriteLine($"{input.Type} was not known for powershell generation.");
                         break;
                 }
 
