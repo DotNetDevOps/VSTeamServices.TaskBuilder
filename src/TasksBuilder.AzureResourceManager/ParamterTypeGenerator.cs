@@ -94,6 +94,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             switch (type)
             {
                 case "string":
+                case "securestring":
                     return typeof(string);
                 case "picklist":
                     return typeof(string);
@@ -101,6 +102,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     return typeof(bool);
                 case "int":
                     return typeof(int);
+                   
             }
             throw new NotImplementedException($"{type} not implemented");
         }
