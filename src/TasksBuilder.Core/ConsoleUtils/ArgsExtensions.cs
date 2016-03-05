@@ -38,7 +38,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
                         "Expression '{0}' refers to a field, not a property.",
                         propertyLambda.ToString()));
 
-                var value = (bi.Right as ConstantExpression).Value;
+
+
+                var value = (bi.Right as ConstantExpression)?.Value ??
+                    ((bi.Right as MemberExpression)?.Expression as ConstantExpression)?.Value;
+
+
 
                 var op = propInfo.GetCustomAttribute<OptionAttribute>();
 
