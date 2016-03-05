@@ -97,7 +97,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             Parameters = new JObject(
                     JObject.FromObject(parametersObj).Properties()
-                        .Where(p => p.Value.ToObject<string>() != null)
+                        .Where(p => p.Value.Type != JTokenType.Null)
                         .Select(p => ResourceManagerHelper.CreateValue(p.Name, p.Value)
                 ));
 

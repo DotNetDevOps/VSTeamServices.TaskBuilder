@@ -99,9 +99,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 case "picklist":
                     return typeof(string);
                 case "bool":
-                    return typeof(bool);
+                    return typeof(bool?);
                 case "int":
-                    return typeof(int);
+                    return typeof(int?);
                    
             }
             throw new NotImplementedException($"{type} not implemented");

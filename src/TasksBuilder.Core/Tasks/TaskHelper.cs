@@ -91,6 +91,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         {
             switch (property.ToString())
             {
+                case "System.Nullable`1[System.Int]":
                 case "System.Int":
                 case "System.String":
                     return "string";
