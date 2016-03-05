@@ -40,8 +40,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
 
 
 
-                var value = (bi.Right as ConstantExpression)?.Value ??
-                    ((bi.Right as MemberExpression)?.Expression as ConstantExpression)?.Value;
+                var value = (bi.Right as ConstantExpression)?.Value ?? GetValue(bi.Right as MemberExpression);
 
 
 
@@ -55,6 +54,16 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
             return args.Concat(File.ReadAllLines(path).Concat(props.SelectMany(a => a))).ToArray();
 
             return args;
+        }
+        private static object GetValue(MemberExpression member)
+        {
+            var objectMember = Expression.Convert(member, typeof(object));
+
+            var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+
+            var getter = getterLambda.Compile();
+
+            return getter();
         }
     }
 }
