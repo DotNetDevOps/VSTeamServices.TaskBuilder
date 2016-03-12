@@ -9,6 +9,7 @@ using Humanizer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SInnovations.Azure.ResourceManager;
+using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 using SInnovations.VSTeamServices.TasksBuilder.Extensions;
@@ -119,20 +120,29 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions));
 
+            var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
+
             return LoadTemplateParameters().OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;
+                var taskName = t.Name;
+
                 var allowedValues = obj.SelectToken("allowedValues")?.ToObject<string[]>() ?? new string[] { };
                 JObject options = null;
                 if (allowedValues.Any())
                 {
-                    options = new JObject(allowedValues.Select(k => new JProperty(k, k.Humanize(LetterCasing.Title))));
+                    options = new JObject(allowedValues.Select(k => 
+                                        new JProperty(k,  
+                                            (optionValues.Contains(taskName) && optionValues[taskName].Any(v=>v.OptionName== k) ?
+                                                    optionValues[taskName].Single(v => v.OptionName == k).OptionValue :
+                                                    k
+                                            ).Humanize(LetterCasing.Title))));
                 }
 
 
                 return new TaskInput
                 {
-                    Name = t.Name,
+                    Name = taskName,
                     DefaultValue = obj.SelectToken("defaultValue")?.Value<string>(),
                     GroupName = groupName,
                     HelpMarkDown = obj.SelectToken("metadata.description")?.Value<string>(),
