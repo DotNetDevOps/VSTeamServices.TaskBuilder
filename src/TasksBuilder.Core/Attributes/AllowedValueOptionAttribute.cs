@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     public class AllowedValueOptionAttribute : Attribute
     {
         public string ParameterName { get; set; }
