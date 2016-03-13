@@ -53,7 +53,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             json.InstanceNameFormat = "";
 
 
-            if(json.FriendlyName.Length > 40)
+            if (json.FriendlyName.Length > 40)
             {
                 throw new ArgumentException($"Task Title can only be up to 40chars : Change {json.FriendlyName}");
             }
@@ -62,8 +62,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             var programOptionsType = assembly.DefinedTypes.SingleOrDefault(t => Attribute.IsDefined(t, typeof(EntryPointAttribute)));
             json.InstanceNameFormat = programOptionsType.GetCustomAttribute<EntryPointAttribute>().InstanceFormat;
             var result = TaskHelper.GetTaskInputs(programOptionsType);
-           
-            json.Inputs = result.Inputs.OrderByDescending(k=>k.Order).ToArray();
+
+            json.Inputs = result.Inputs.OrderByDescending(k => k.Order).ToArray();
             json.Groups = result.Groups;
 
 
@@ -106,10 +106,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 case "pickList":
                 case "boolean":
                 case "bool":
-                case "string":                 
+                case "string":
                 case "connectedService:AzureRM":
                 case "filePath":
-                    return PSStringType;             
+                    return PSStringType;
             }
 
             throw new NotImplementedException(type);
@@ -159,33 +159,49 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             writer.WriteLine("$cwd =  Split-Path -parent $PSCommandPath");
             writer.WriteLine($"$CMD = \"$cwd/{program}\"");
 
+            writer.Write("& $CMD");
 
-            var serviceEndpoint = inputs.Where(i => i.Type == "connectedService:AzureRM").SingleOrDefault();
-            if (serviceEndpoint != null)
+            foreach (var serviceEndpoint in inputs.Where(i => i.Type.StartsWith("connectedService:")))
             {
                 var rng = Path.GetRandomFileName().Substring(0, 5);
                 writer.WriteLine($"$serviceEndpoint_{rng} = Get-ServiceEndpoint -Name \"${serviceEndpoint.Name}\" -Context $distributedTaskContext");
-                writer.WriteLine($"$servicePrincipalId_{rng} = $serviceEndpoint_{rng}.Authorization.Parameters.ServicePrincipalId");
-                writer.WriteLine($"$servicePrincipalKey_{rng} = $serviceEndpoint_{rng}.Authorization.Parameters.ServicePrincipalKey");
 
-                writer.WriteLine($"$tenantId_{rng} = $serviceEndpoint_{rng}.Authorization.Parameters.TenantId");
-                writer.WriteLine($"$azureSubscriptionId_{rng} = $serviceEndpoint_{rng}.Data.SubscriptionId");
-                writer.WriteLine($"$azureSubscriptionName_{rng} = $serviceEndpoint_{rng}.Data.SubscriptionName");
-                writer.WriteLine($"$securePassword_{rng} = ConvertTo-SecureString $servicePrincipalKey_{rng} -AsPlainText -Force");
+                if (serviceEndpoint.Type == "connectedService:AzureRM")
+                {
 
 
+                    var a = WritePSVariable(writer, rng, "ServicePrincipalId");
+                    var b = WritePSVariable(writer, rng, "ServicePrincipalKey");
+                    var c = WritePSVariable(writer, rng, "TenantId");
 
+                    writer.WriteLine($"$azureSubscriptionId_{rng} = $serviceEndpoint_{rng}.Data.SubscriptionId");
+                    //   writer.WriteLine($"$azureSubscriptionName_{rng} = $serviceEndpoint_{rng}.Data.SubscriptionName");
 
-                writer.WriteLine($"& $CMD --TenantId $tenantId_{rng} --SubscriptionId $azureSubscriptionId_{rng} --PrincipalKey $servicePrincipalKey_{rng} --PrincipalId $servicePrincipalId_{rng} {string.Join(" ", Enumerable.Range(0, inputs.Length).Select(i => $"$arg{i}"))}");
+                    writer.Write($" --TenantId {c} --SubscriptionId $azureSubscriptionId_{rng} --PrincipalKey {b} --PrincipalId {a}");
+                }
+                else if (serviceEndpoint.Type == "connectedService:Generic")
+                {
+                    var prefix = serviceEndpoint.Name;
+                    var a = WritePSVariable(writer, rng, "Username");
+                    var b = WritePSVariable(writer, rng, "Password");
+                    writer.Write($" --{prefix}Username {a} --{prefix}Password {b}");
+                }
+
 
 
             }
-            else
-            {
-                writer.WriteLine($"& $CMD {string.Join(" ", Enumerable.Range(0, inputs.Length).Select(i => $"$arg{i}"))}");
 
-            }
 
+            writer.WriteLine($" {string.Join(" ", Enumerable.Range(0, inputs.Length).Select(i => $"$arg{i}"))}");
+
+
+
+        }
+
+        private static string WritePSVariable(StreamWriter writer, string rng, string a)
+        {
+            writer.WriteLine($"${a}_{rng} = $serviceEndpoint_{rng}.Authorization.Parameters.{a}");
+            return $"${a}_{rng}";
         }
     }
 }
