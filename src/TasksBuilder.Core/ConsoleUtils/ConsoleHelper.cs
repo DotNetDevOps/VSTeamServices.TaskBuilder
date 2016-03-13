@@ -56,13 +56,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
                     // {
 
 
-                    if (prop.PropertyType == att.ResourceType)
+                    if (prop.PropertyType == att.ResourceType || att.ResourceType.IsSubclassOf(prop.PropertyType))
                     {
                         prop.SetValue(options, handler);
                     }
                     else
                     {
-                        prop.SetValue(options, prop.GetValue(options) ?? Activator.CreateInstance(prop.PropertyType));
+                        
+                        prop.SetValue(options, prop.GetValue(options) ??  Activator.CreateInstance(prop.PropertyType));
                     }
 
                     if (handler is IConsoleReader)
