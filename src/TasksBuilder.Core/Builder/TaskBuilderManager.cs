@@ -163,10 +163,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 }
 
             }
-            writer.WriteLine("$cwd =  Split-Path -parent $PSCommandPath");
-            writer.WriteLine($"$CMD = \"$cwd/{program}\"");
+          
 
-            writer.Write("& $CMD");
+            var sb = new StringBuilder();
 
             foreach (var serviceEndpoint in inputs.Where(i => i.Type.StartsWith("connectedService:")))
             {
@@ -184,19 +183,23 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                     writer.WriteLine($"$azureSubscriptionId_{rng} = $serviceEndpoint_{rng}.Data.SubscriptionId");
                     //   writer.WriteLine($"$azureSubscriptionName_{rng} = $serviceEndpoint_{rng}.Data.SubscriptionName");
 
-                    writer.Write($" --TenantId {c} --SubscriptionId $azureSubscriptionId_{rng} --PrincipalKey {b} --PrincipalId {a}");
+                    sb.Append($" --TenantId {c} --SubscriptionId $azureSubscriptionId_{rng} --PrincipalKey {b} --PrincipalId {a}");
                 }
                 else if (serviceEndpoint.Type == "connectedService:Generic")
                 {
                     var prefix = serviceEndpoint.Name;
                     var a = WritePSVariable(writer, rng, "Username");
                     var b = WritePSVariable(writer, rng, "Password");
-                    writer.Write($" --{prefix}Username {a} --{prefix}Password {b}");
+                    sb.Append($" --{prefix}Username {a} --{prefix}Password {b}");
                 }
 
 
 
             }
+            writer.WriteLine("$cwd =  Split-Path -parent $PSCommandPath");
+            writer.WriteLine($"$CMD = \"$cwd/{program}\"");
+            writer.Write("& $CMD");
+            writer.Write(sb.ToString());
 
 
             writer.WriteLine($" {string.Join(" ", Enumerable.Range(0, inputs.Length).Select(i => $"$arg{i}"))}");
