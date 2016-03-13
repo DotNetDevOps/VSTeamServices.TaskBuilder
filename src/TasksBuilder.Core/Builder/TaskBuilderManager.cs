@@ -108,11 +108,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 case "bool":
                 case "string":
                 case "connectedService:AzureRM":
+                case "connectedService:Generic":
                 case "filePath":
                     return PSStringType;
             }
+            Console.WriteLine("Warning: Type not known for  PSType " + type);
+            return PSStringType;
 
-            throw new NotImplementedException(type);
         }
 
         private static void WriteOauthBrokerPowershell(StreamWriter writer, string program, TaskInput[] inputs)
