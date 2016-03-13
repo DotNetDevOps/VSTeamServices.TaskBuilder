@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -40,6 +41,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             var json = new TaskJson();
 
             json.Name = assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
+            if(!new Regex("^[a-zA-Z0-9]*$").IsMatch(json.Name))
+            {
+                throw new ArgumentException("AssemblyProductAttribute must be alphnumeric");
+            }
             json.FriendlyName = assembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
             json.Description = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
             json.Author = assembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
