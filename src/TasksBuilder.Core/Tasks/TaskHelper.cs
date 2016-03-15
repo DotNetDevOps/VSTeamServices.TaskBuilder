@@ -81,7 +81,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             var d = property.GetCustomAttribute<DisplayAttribute>();
             return d?.GetOrder() ?? 0;
         }
-        public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, SourceDefinitionAttribute parent=null)
+        public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, SourceDefinitionAttribute parent)
         {
 
 

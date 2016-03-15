@@ -21,7 +21,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         [Option("KeyVaultName")]
         public string VaultName { get; set; }
 
-        [ArmResourceProviderPicker("{KeyVaultName}","secrets", "2015-06-01")]
+        [ArmResourceProviderPicker("${KeyVaultName}","secrets", "2015-06-01")]
         [Display(Description = "The keyvault secret name to store value in", Name = "Secret Name", GroupName = "KeyVault")]
         [Required]
         [Option("SecretName")]

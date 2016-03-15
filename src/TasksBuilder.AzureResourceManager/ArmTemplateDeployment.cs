@@ -145,7 +145,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 };
             }).ToArray();
 
-            var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions));
+            var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions),parent);
             result.Inputs.AddRange(inputs);
 
             return result;

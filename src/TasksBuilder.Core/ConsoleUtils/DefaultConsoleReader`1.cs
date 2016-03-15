@@ -37,7 +37,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
 
         public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, SourceDefinitionAttribute parent)
         {
-            return TaskHelper.GetTaskInputs(typeof(T));
+            return TaskHelper.GetTaskInputs(typeof(T),parent);
         }
     }
 }
