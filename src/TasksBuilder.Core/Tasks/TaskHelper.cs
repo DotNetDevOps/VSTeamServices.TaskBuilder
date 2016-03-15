@@ -114,6 +114,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                     VisibleRule = property.GetCustomAttribute<VisibleRuleAttribute>()?.VisibleRule,
                     Order = GetOrder(property),
                 };
+                defaultTask.Properties.EditableOptions = "True";
 
                 if (variableName.Contains(" "))
                 {
@@ -140,7 +141,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
                 }
                 else {
-                    defaultTask.Type = NewMethod(resourceType ?? property.PropertyType);
+                    defaultTask.Type = GetTaskInputType(resourceType,property);
                     results.Inputs.Add(defaultTask);
                 }
 
@@ -163,9 +164,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
 
         private static string GlobPathString = typeof(GlobPath).ToString();
-        private static string NewMethod(Type property)
+
+        private static string GetTaskInputType(Type propertyType, PropertyInfo propertyInfo)
         {
-            switch (property.ToString())
+            propertyType = propertyType ?? propertyInfo.PropertyType;
+
+            if(propertyType == typeof(string) && propertyInfo.GetCustomAttribute< SourceDefinitionAttribute >() != null)
+            {
+                return "pickList";
+            }
+
+            switch (propertyType.ToString())
             {
                 case "System.Nullable`1[System.Int]":
                 case "System.Int":
@@ -174,16 +183,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":
                     return "boolean";
+                   
 
             };
 
-            var type = property.GetCustomAttribute<ResourceTypeAttribute>()?.TaskInputType;
+            var type = propertyType.GetCustomAttribute<ResourceTypeAttribute>()?.TaskInputType;
             if (!string.IsNullOrEmpty(type))
             {
                 return type;
             }
 
-            throw new NotImplementedException(property.ToString());
+            throw new NotImplementedException(propertyType.ToString());
         }
     }
 }

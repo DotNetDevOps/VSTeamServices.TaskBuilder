@@ -26,17 +26,20 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         }
 
         [Option("CreateTemplatesOnly")]
+        [Required]
         [Display(GroupName = "TemplateDeploymentOptions", Order = 999, Description = "Create Template Files only but do not deploy", Name = "Create Templates Only")]
         public bool CreateTemplatesOnly { get; set; }
 
 
         [VisibleRule("CreateTemplatesOnly = false")]
+        [Required]
         [Display(Name = "Service Principal", GroupName = "TemplateDeploymentOptions", ShortName = "ConnectedServiceName", ResourceType = typeof(ServiceEndpoint), Description = "Azure Service Principal to obtain tokens from")]
         public ServiceEndpoint ConnectedServiceName { get; set; }
         
         [ResourceGrounPicker(typeof(ConnectedServiceRelation))]
         [VisibleRule("CreateTemplatesOnly = false")]
-        [Display(Description = "Resource Group for deployment", GroupName = "TemplateDeploymentOptions")]
+        [Required]
+        [Display(Description = "Provide the name of the resource group.", GroupName = "TemplateDeploymentOptions")]
         [Option("ResourceGroup")]
         public string ResourceGroup { get; set; }
 
@@ -51,8 +54,15 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         public string DeploymentName { get; set; }
 
         [VisibleRule("CreateTemplatesOnly = false")]
+        [Option("AppendTimeStamp", DefaultValue = true)]
+        [Required]
+        [Display(GroupName = "TemplateDeploymentOptions", Description = "Append a timespam to the deployment name", Name = "Append Timestamp")]
+        public bool AppendTimeStamp { get; set; }
+
+        [VisibleRule("CreateTemplatesOnly = false")]
         [Option("CreateResourceGroup", DefaultValue = true)]
-        [Display(GroupName = "TemplateDeploymentOptions", Description = "Location to use if resource group do not exists", Name = "Create Resource Group")]
+        [Required]
+        [Display(GroupName = "TemplateDeploymentOptions", Description = "Create the resource group if it do not exists", Name = "Create Resource Group")]
         public bool CreateResourceGroup { get; set; }
 
         [VisibleRule("CreateTemplatesOnly = false")]
