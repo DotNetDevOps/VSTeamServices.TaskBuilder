@@ -173,7 +173,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
 
         private static bool IsAlphaNumeric(char? c)
         {
-            return c != null && (char.IsLetterOrDigit(c.Value) || c.Value == '-' || c == '.');
+            return c != null && (char.IsLetterOrDigit(c.Value) || c.Value == '-' || c == '.' || c==' ');
         }
     }
     class GlobParser
