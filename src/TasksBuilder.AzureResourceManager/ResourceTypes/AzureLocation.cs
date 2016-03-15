@@ -1,18 +1,17 @@
 ﻿
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
 {
+    using System;
     using Newtonsoft.Json.Linq;
     using SInnovations.VSTeamServices.TasksBuilder.Models;
     using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+    using Tasks;
 
     public class AzureLocation : ITaskInputFactory
     {
-        public Group[] CreateGroups()
-        {
-            return new Group[] { };
-        }
+       
 
-        public TaskInput[] CreateInputs(string groupName, TaskInput defaultTask)
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask)
         {
             defaultTask.Type = "pickList";
             defaultTask.Properties.EditableOptions = "True";
@@ -33,7 +32,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
                 new JProperty("West Europe", "West Europe"),
                 new JProperty("West US", "West US")
             );
-            return new[] { defaultTask };
+
+            var result = new TaskGeneratorResult();
+            result.Inputs.Add(defaultTask);
+            return result;
         }
     }
 }

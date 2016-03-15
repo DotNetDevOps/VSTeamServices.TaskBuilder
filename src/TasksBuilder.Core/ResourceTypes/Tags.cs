@@ -9,6 +9,7 @@ using CommandLine;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 using SInnovations.VSTeamServices.TasksBuilder.Extensions;
 using SInnovations.VSTeamServices.TasksBuilder.Models;
+using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
 {
@@ -20,11 +21,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
             return new Group[] { };
         }
 
-        public TaskInput[] CreateInputs(string groupName, TaskInput defaultTask)
+       
+
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask)
         {
             defaultTask.Type = "string";
 
-            return new[] { defaultTask };
+
+            return new TaskGeneratorResult { Inputs = new List<TaskInput>{ defaultTask } };
         }
 
         public void OnConsoleParsing(Parser parser, string[] args, object options, PropertyInfo info)

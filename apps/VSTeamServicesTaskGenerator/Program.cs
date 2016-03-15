@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -37,8 +38,26 @@ namespace VSTeamServicesTaskGenerator
         {
             var options = ConsoleHelper.ParseAndHandleArguments<ProgramOptions>("Generating Task", args);
 
-            foreach(var path in options.Paths.MatchedFiles())
-                TaskBuilder.BuildTask(path);
+            foreach (var path in options.Paths.MatchedFiles())
+            {
+
+                //TaskBuilder.BuildTask(path);
+                var ps = new ProcessStartInfo(path, "--build");
+              
+
+                ps.UseShellExecute = false;
+               // ps.RedirectStandardOutput = true;
+               // ps.RedirectStandardError = true;
+                var process = Process.Start(ps);
+               // process.OutputDataReceived += (sender, args1) => Console.WriteLine("received output: {0}", args1.Data);
+               // process.BeginOutputReadLine();
+
+                //process.ErrorDataReceived += (sender, args1) => Console.WriteLine("received err: {0}", args1.Data);
+                //process.BeginErrorReadLine();
+                process.WaitForExit();
+                if (process.ExitCode != 0)
+                    Environment.Exit(process.ExitCode);
+            }
 
         }
     }

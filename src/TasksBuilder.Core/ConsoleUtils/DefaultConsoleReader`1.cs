@@ -31,15 +31,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
             }
         }
 
-        public Group[] CreateGroups()
-        {
-            return TaskHelper.GetTaskInputs(typeof(T)).Groups;
-        }
+      
 
-        public TaskInput[] CreateInputs(string groupName, TaskInput defaultTask)
+
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask)
         {
-            var result = TaskHelper.GetTaskInputs(typeof(T));
-            return result.Inputs;
+            return TaskHelper.GetTaskInputs(typeof(T));
         }
     }
 }

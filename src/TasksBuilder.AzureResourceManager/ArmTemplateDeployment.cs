@@ -109,23 +109,16 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             return Output.SelectToken($"{name}.value").ToString();
 
         }
-        public virtual Group[] CreateGroups()
+           
+        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask)
         {
-            return TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions)).Groups;
-        }
-
-        public virtual TaskInput[] CreateInputs(string groupName, TaskInput defaultTask)
-        {
-
-
-            var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions));
-
+            
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
 
-            return LoadTemplateParameters().OfType<JProperty>().Select(t =>
+            var inputs = LoadTemplateParameters().OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;
-                var taskName = t.Name;
+                var variableName = t.Name;
 
                 var allowedValues = obj.SelectToken("allowedValues")?.ToObject<string[]>() ?? new string[] { };
                 JObject options = null;
@@ -133,16 +126,15 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 {
                     options = new JObject(allowedValues.Select(k => 
                                         new JProperty(k,  
-                                            (optionValues.Contains(taskName) && optionValues[taskName].Any(v=>v.OptionName== k) ?
-                                                    optionValues[taskName].Single(v => v.OptionName == k).OptionValue :
+                                            (optionValues.Contains(variableName) && optionValues[variableName].Any(v=>v.OptionName== k) ?
+                                                    optionValues[variableName].Single(v => v.OptionName == k).OptionValue :
                                                     k
                                             ).Humanize(LetterCasing.Title))));
                 }
-
-
+                
                 return new TaskInput
                 {
-                    Name = taskName,
+                    Name = variableName,
                     DefaultValue = obj.SelectToken("defaultValue")?.Value<string>(),
                     GroupName = groupName,
                     HelpMarkDown = obj.SelectToken("metadata.description")?.Value<string>(),
@@ -151,9 +143,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     Required = string.IsNullOrEmpty(obj.SelectToken("defaultValue")?.Value<string>()),
                     Options = options
                 };
-            }).Concat(result.Inputs).ToArray();
+            }).ToArray();
 
+            var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions));
+            result.Inputs.AddRange(inputs);
 
+            return result;
 
         }
 

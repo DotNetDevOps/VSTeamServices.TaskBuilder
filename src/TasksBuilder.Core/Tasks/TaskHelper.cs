@@ -20,10 +20,71 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             Console.WriteLine($"##vso[task.setvariable variable={variableName};]{value}");
         }
 
+        /// <summary>
+        /// Get a task name from either  <see cref="DisplayAttribute"/> ShortName or <see cref="BaseOptionAttribute"/> 
+        /// long name in this specific order with fallback to the clr property name;
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static string GetVariableName(MemberInfo property)
+        {
+            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var d = property.GetCustomAttribute<DisplayAttribute>();
+
+            return d?.ShortName ?? i?.LongName ?? property.Name;
+        }
+        public static JToken GetTaskDefaultValue(PropertyInfo property)
+        {
+            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            object defaultValue = i?.DefaultValue ?? "";
+            if (property.PropertyType == typeof(bool))
+            {
+                defaultValue = (defaultValue.GetType() == typeof(bool) && (bool)defaultValue) ? "true" : "false";
+            }
+
+            return JToken.FromObject(defaultValue);
+        }
+        public static Type GetResourcetype(PropertyInfo property)
+        {
+            var d = property.GetCustomAttribute<DisplayAttribute>();
+
+            return d?.ResourceType;
+        }
+        public static string GetHelpmarkDown(PropertyInfo property)
+        {
+            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var d = property.GetCustomAttribute<DisplayAttribute>();
+
+            return d?.Description ?? i?.HelpText;
+        }
+        public static string GetLabel(PropertyInfo property)
+        {
+            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var d = property.GetCustomAttribute<DisplayAttribute>();
+
+            return d?.Name ?? i?.LongName;
+        }
+        public static string GetGroupName(PropertyInfo property)
+        {
+            var d = property.GetCustomAttribute<DisplayAttribute>();
+
+            return d?.GroupName;
+        }
+        public static bool GetRequired(PropertyInfo property)
+        {
+            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var r = property.GetCustomAttribute<RequiredAttribute>();
+            return i?.Required ?? (r == null ? false : true);
+        }
+        public static int GetOrder(PropertyInfo property)
+        {
+            var d = property.GetCustomAttribute<DisplayAttribute>();
+            return d?.GetOrder() ?? 0;
+        }
         public static TaskGeneratorResult GetTaskInputs(Type programOptionsType)
         {
 
-            var result = new TaskGeneratorResult();
+
 
             var properties = programOptionsType.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly).Where(p =>
                     Attribute.IsDefined(p, typeof(BaseOptionAttribute)) || Attribute.IsDefined(p, typeof(DisplayAttribute)))
@@ -32,60 +93,75 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             //     var useServiceEndpoint = properties.Any(p => Attribute.IsDefined(p, typeof(ServiceEndpointAttribute)));
 
 
-            var groups = new List<Group>();
-
-            result.Inputs = properties.Select(property =>
+            var results = new TaskGeneratorResult();
+            foreach (var property in properties)
             {
-                var i = property.GetCustomAttribute<BaseOptionAttribute>();
-                var d = property.GetCustomAttribute<DisplayAttribute>();
-                var r = property.GetCustomAttribute<RequiredAttribute>();
-                object defaultValue = i?.DefaultValue ?? "";
 
-                if (property.PropertyType == typeof(bool))
-                {
-                    defaultValue = (defaultValue.GetType() == typeof(bool) && (bool)defaultValue) ? "true" : "false";
-                }
 
-                var resourceType = d?.ResourceType ?? typeof(string);
+                var groupName = GetGroupName(property);
+                var resourceType = GetResourcetype(property);
+                var variableName = GetVariableName(property);
+
+
                 var defaultTask = new TaskInput()
                 {
-                    HelpMarkDown = d?.Description ?? i?.HelpText,
-                    Name = d?.ShortName ?? i?.LongName, //VariableName
-                    DefaultValue = JToken.FromObject(defaultValue),
-                    Label = d?.Name ?? i?.LongName,
-                    GroupName = d?.GroupName,
-                    Required = i?.Required ?? (r == null ? false : true),
+                    HelpMarkDown = GetHelpmarkDown(property),
+                    Name = variableName,
+                    DefaultValue = GetTaskDefaultValue(property),
+                    Label = GetLabel(property),
+                    GroupName = groupName,
+                    Required = GetRequired(property),
                     VisibleRule = property.GetCustomAttribute<VisibleRuleAttribute>()?.VisibleRule,
-                    Order = d?.GetOrder() ?? 0
+                    Order = GetOrder(property),
                 };
-                if (defaultTask.Name?.Contains(" ") ?? false)
+
+                if (variableName.Contains(" "))
                 {
                     throw new ArgumentException($"The generated name for the given TaskInput contains spaces, please fix. : {defaultTask.Name}");
+                }
+
+                var sd = property.GetCustomAttribute<SourceDefinitionAttribute>();
+                if (sd != null)
+                {
+                    results.SourceDefinitions.Add(new SourceDefinition
+                    {
+                        Endpoint = sd.Endpoint,
+                        AuthKey = (Activator.CreateInstance(sd.ConnectedService) as AuthKeyProvider).GetAuthKey(),
+                        Selector = sd.Selector,
+                        KeySelector = sd.KeySelector ?? "",
+                        Target = variableName
+                    });
                 }
 
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
                     var fac = (Activator.CreateInstance(resourceType) as ITaskInputFactory);
-                    groups.AddRange(fac.CreateGroups());
-                    return fac.CreateInputs(d?.GroupName, defaultTask);
+                    results.Add(fac.GenerateTasks(groupName, defaultTask));
+
                 }
                 else {
-                    defaultTask.Type = NewMethod(d?.ResourceType ?? property.PropertyType);
-                    return new[] { defaultTask };
+                    defaultTask.Type = NewMethod(resourceType ?? property.PropertyType);
+                    results.Inputs.Add(defaultTask);
                 }
 
-            }).SelectMany(k => k).ToArray();
 
-            result.Groups = programOptionsType.GetCustomAttributes<GroupAttribute>()
-              .Select(g => new Group
-              {
-                  DisplayName = g.DisplayName,
-                  Name = g.Name,
-                  IsExpanded = g.isExpanded
-              }).Concat(groups).ToArray();
+            }
+            results.Groups.AddRange(
+                programOptionsType.GetCustomAttributes<GroupAttribute>()
+                      .Select(g => new Group
+                      {
+                          DisplayName = g.DisplayName,
+                          Name = g.Name,
+                          IsExpanded = g.isExpanded
+                      }));
 
-            return result;
+            return results;
+
+
         }
+
+
+
         private static string GlobPathString = typeof(GlobPath).ToString();
         private static string NewMethod(Type property)
         {
@@ -98,7 +174,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":
                     return "boolean";
-              
+
             };
 
             var type = property.GetCustomAttribute<ResourceTypeAttribute>()?.TaskInputType;

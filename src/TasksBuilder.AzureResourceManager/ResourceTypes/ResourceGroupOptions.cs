@@ -10,6 +10,16 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
     [Group(DisplayName = "Deployment", isExpanded = true, Name = "TemplateDeploymentOptions")]
     public class ResourceGroupOptions
     {
+        public class ConnectedServiceRelation : PropertyRelation<ResourceGroupOptions, ServiceEndpoint>
+        {
+            public ConnectedServiceRelation()
+                : base(@class => @class.ConnectedServiceName)
+            {
+
+            }
+        }
+
+
         public ResourceGroupOptions()
         {
             Tags = new Dictionary<string, string>();
@@ -23,7 +33,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         [VisibleRule("CreateTemplatesOnly = false")]
         [Display(Name = "Service Principal", GroupName = "TemplateDeploymentOptions", ShortName = "ConnectedServiceName", ResourceType = typeof(ServiceEndpoint), Description = "Azure Service Principal to obtain tokens from")]
         public ServiceEndpoint ConnectedServiceName { get; set; }
-
+        
+        [ResourceGrounPicker(typeof(ConnectedServiceRelation))]
         [VisibleRule("CreateTemplatesOnly = false")]
         [Display(Description = "Resource Group for deployment", GroupName = "TemplateDeploymentOptions")]
         [Option("ResourceGroup")]

@@ -7,6 +7,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Reflection;
+    using Builder;
     using CommandLine;
 
 
@@ -99,6 +100,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
         }
         public static T ParseAndHandleArguments<T>(string Message, string[] args, bool ignoreError = false) where T : new()
         {
+            if(args.Length == 1 && args.First() == "--build")
+            {
+                TaskBuilder.BuildSelf();
+                Environment.Exit(0);
+            }
             Console.WriteLine(string.Join(" ", args));
             args = MoveBoolsLast(args);
             Console.WriteLine(Message);

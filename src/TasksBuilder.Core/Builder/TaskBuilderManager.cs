@@ -18,30 +18,25 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 {
     internal class TaskBuilder
     {
-        public static JObject BuildTask(string pathToDll)
+     
+        public static void BuildSelf()
         {
-            ResolveEventHandler loader = delegate (object source, ResolveEventArgs e)
-            {
-                var name = e.Name.Split(',').First();
-                if (!name.EndsWith(".dll"))
-                    name += ".dll";
+            var assembly = Assembly.GetEntryAssembly();
+            string codeBase = assembly.CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path = Uri.UnescapeDataString(uri.Path);
+            var pathToExe = Path.Combine(Path.GetDirectoryName(path), System.AppDomain.CurrentDomain.FriendlyName);
 
-                if (File.Exists(Path.Combine(Path.GetDirectoryName(pathToDll), name)))
-                {
-                    return Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(pathToDll), name));
-                }
-
-                throw new DllNotFoundException(e.Name);
-
-            };
-            AppDomain.CurrentDomain.AssemblyResolve += loader;
-            var assembly = Assembly.LoadFile(pathToDll);
-
+            BuildFromAssembly(assembly, pathToExe);
+        }
+        public static JObject BuildFromAssembly(Assembly assembly,string pathToDll)
+        {
+         
 
             var json = new TaskJson();
 
             json.Name = assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
-            if(!new Regex("^[a-zA-Z0-9]*$").IsMatch(json.Name))
+            if (!new Regex("^[a-zA-Z0-9]*$").IsMatch(json.Name))
             {
                 throw new ArgumentException("AssemblyProductAttribute must be alphnumeric");
             }
@@ -69,7 +64,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             var result = TaskHelper.GetTaskInputs(programOptionsType);
 
             json.Inputs = result.Inputs.OrderByDescending(k => k.Order).ToArray();
-            json.Groups = result.Groups;
+            json.Groups = result.Groups.ToArray();
+            json.SourceDefinitions = result.SourceDefinitions.ToArray();
 
 
             json.Execution = new TaskExecution
@@ -97,11 +93,34 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 writer.Flush();
             }
             File.WriteAllText(Path.Combine(outputDir, "task.json"), obj.ToString(Newtonsoft.Json.Formatting.Indented));
+            return obj;
 
+        }
+        public static JObject BuildTask(string pathToDll)
+        {
+            ResolveEventHandler loader = delegate (object source, ResolveEventArgs e)
+            {
+                var name = e.Name.Split(',').First();
+                if (!name.EndsWith(".dll"))
+                    name += ".dll";
+
+                if (File.Exists(Path.Combine(Path.GetDirectoryName(pathToDll), name)))
+                {
+                    return Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(pathToDll), name));
+                }
+
+                throw new DllNotFoundException(e.Name);
+
+            };
+            AppDomain.CurrentDomain.AssemblyResolve += loader;
+            var assembly = Assembly.LoadFile(pathToDll);
+
+            var obj = BuildFromAssembly(assembly,pathToDll);
 
             AppDomain.CurrentDomain.AssemblyResolve -= loader;
             return obj;
         }
+
         private const string PSStringType = "String";
         private static string PSType(string type)
         {

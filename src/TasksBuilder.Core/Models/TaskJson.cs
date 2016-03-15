@@ -29,6 +29,6 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Models
 
         public TaskExecution Execution { get; set; }
 
-        public JArray SourceDefinitions { get; set; }
+        public SourceDefinition[] SourceDefinitions { get; set; }
     }
 }
