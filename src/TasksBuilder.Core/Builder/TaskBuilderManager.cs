@@ -16,6 +16,27 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 {
+
+    class CamelCase : CamelCasePropertyNamesContractResolver
+    {
+        protected override JsonProperty CreateProperty(MemberInfo member,
+            MemberSerialization memberSerialization)
+        {
+            var res = base.CreateProperty(member, memberSerialization);
+
+            var attrs = member
+                .GetCustomAttributes(typeof(JsonPropertyAttribute), true);
+            if (attrs.Any())
+            {
+                var attr = (attrs[0] as JsonPropertyAttribute);
+                if (res.PropertyName != null)
+                    res.PropertyName = attr.PropertyName;
+            }
+
+            return res;
+        }
+    }
+
     internal class TaskBuilder
     {
      
@@ -80,7 +101,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 
             var serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                ContractResolver = new CamelCase(),
                 NullValueHandling = NullValueHandling.Ignore
             });
             var obj = JObject.FromObject(json, serializer);
