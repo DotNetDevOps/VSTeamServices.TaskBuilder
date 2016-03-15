@@ -11,11 +11,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
 {
     public class SourceDefinitionAttribute : Attribute
     {
-        public SourceDefinitionAttribute(Type connectedService, string endpoint, string selector)
+       
+        public SourceDefinitionAttribute(Type connectedService, string endpoint, string selector, string keySelector=null) 
         {
             ConnectedService = connectedService;
             Endpoint = endpoint;
             Selector = selector;
+            KeySelector = KeySelector;
         }
 
         public Type ConnectedService { get; private set; }
@@ -24,7 +26,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
         public string KeySelector { get; internal set; }
         public string Selector { get; private set; }
     }
-
+    public class ConnectedServiceRelationAttribute : SourceDefinitionAttribute
+    {
+        public ConnectedServiceRelationAttribute(Type connectedService) : base(connectedService,null,null)
+        {
+           
+        }
+    }
     public class ResourceGrounPickerAttribute : SourceDefinitionAttribute
     {
         public ResourceGrounPickerAttribute(Type connectedService)
@@ -37,6 +45,35 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
 
         }
     }
+
+    public class ArmResourceIdPickerAttribute : SourceDefinitionAttribute
+    {
+        public ArmResourceIdPickerAttribute(string provider, string apiVersion)
+            : base(
+                 null,
+                 $"https://management.azure.com/subscriptions/$(authKey.SubscriptionId)/providers/{provider}?api-version={apiVersion}",
+                 "jsonpath:$.value[*].name",
+                 "jsonpath:$.value[*].id"
+                 )
+        {
+
+        }
+    }
+
+    public class ArmResourceProviderPickerAttribute : SourceDefinitionAttribute
+    {
+        public ArmResourceProviderPickerAttribute(string id, string subTypes, string apiVersion)
+            : base(
+                 null,
+                 $"https://management.azure.com/{id}/{subTypes??""}?api-version={apiVersion}",
+                 "jsonpath:$.value[*].name",
+                 "jsonpath:$.value[*].id"
+                 )
+        {
+
+        }
+    }
+
     public interface AuthKeyProvider
     {
         string GetAuthKey();

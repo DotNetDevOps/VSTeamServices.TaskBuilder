@@ -45,6 +45,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
 
         [VisibleRule("CreateTemplatesOnly = false")]
         [Option("ResourceGroupLocation")]
+        [Required]
         [Display(ResourceType = typeof(AzureLocation), GroupName = "TemplateDeploymentOptions", Name = "Resource Group Location", Description = "Location to use if resource group do not exists")]
         public string ResourceGroupLocation { get; set; }
 

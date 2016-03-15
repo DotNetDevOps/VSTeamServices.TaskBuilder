@@ -74,14 +74,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         {
             var i = property.GetCustomAttribute<BaseOptionAttribute>();
             var r = property.GetCustomAttribute<RequiredAttribute>();
-            return i?.Required ?? (r == null ? false : true);
+            return (r == null ? i?.Required ??false: true);
         }
         public static int GetOrder(PropertyInfo property)
         {
             var d = property.GetCustomAttribute<DisplayAttribute>();
             return d?.GetOrder() ?? 0;
         }
-        public static TaskGeneratorResult GetTaskInputs(Type programOptionsType)
+        public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, SourceDefinitionAttribute parent=null)
         {
 
 
@@ -124,20 +124,29 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                 var sd = property.GetCustomAttribute<SourceDefinitionAttribute>();
                 if (sd != null)
                 {
-                    results.SourceDefinitions.Add(new SourceDefinition
+                    try {
+                        if (!string.IsNullOrEmpty(sd.Endpoint))
+                        {
+                            results.SourceDefinitions.Add(new SourceDefinition
+                            {
+                                Endpoint = sd.Endpoint,
+                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
+                                Selector = sd.Selector,
+                                KeySelector = sd.KeySelector ?? "",
+                                Target = variableName
+                            });
+                        }
+
+                    } catch(Exception ex)
                     {
-                        Endpoint = sd.Endpoint,
-                        AuthKey = (Activator.CreateInstance(sd.ConnectedService) as AuthKeyProvider).GetAuthKey(),
-                        Selector = sd.Selector,
-                        KeySelector = sd.KeySelector ?? "",
-                        Target = variableName
-                    });
+                        Console.WriteLine(ex.ToString());
+                    }
                 }
 
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
                     var fac = (Activator.CreateInstance(resourceType) as ITaskInputFactory);
-                    results.Add(fac.GenerateTasks(groupName, defaultTask));
+                    results.Add(fac.GenerateTasks(groupName, defaultTask,sd));
 
                 }
                 else {

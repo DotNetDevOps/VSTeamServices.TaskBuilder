@@ -110,7 +110,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
         }
            
-        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask)
+        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, SourceDefinitionAttribute parent)
         {
             
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);

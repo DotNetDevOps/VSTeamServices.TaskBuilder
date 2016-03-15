@@ -6,11 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Azure.KeyVault;
+using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 {
+
+    
     public class KeyVaultOutput<T> : DefaultConsoleReader<KeyVaultOptions>, IConsoleReader<T>
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
@@ -20,14 +23,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         /// </summary>
         public KeyVaultOutput()
         {
-       
+            Options = new KeyVaultOptions();
         }
 
         /// <summary>
         /// Runtime constructor
         /// </summary>
         /// <param name="endPointProvider"></param>
-        public KeyVaultOutput(Func<T, ServiceEndpoint> endPointProvider)
+        public KeyVaultOutput(Func<T, ServiceEndpoint> endPointProvider) : this()
         {
             EndpointProvider = endPointProvider;
         }
@@ -63,6 +66,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         {
             AccessToken = EndpointProvider(options).GetToken("https://vault.azure.net");
         }
-        
+
+       
     }
 }

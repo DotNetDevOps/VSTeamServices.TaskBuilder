@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
+using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 using SInnovations.VSTeamServices.TasksBuilder.Extensions;
 using SInnovations.VSTeamServices.TasksBuilder.Models;
@@ -23,7 +24,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
 
        
 
-        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask)
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, SourceDefinitionAttribute parent)
         {
             defaultTask.Type = "string";
 
