@@ -17,7 +17,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
             ConnectedService = connectedService;
             Endpoint = endpoint;
             Selector = selector;
-            KeySelector = KeySelector;
+            KeySelector = keySelector;
         }
 
         public Type ConnectedService { get; private set; }
