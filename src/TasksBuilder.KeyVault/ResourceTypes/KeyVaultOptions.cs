@@ -32,7 +32,6 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 
         [Display(ResourceType = typeof(Tags),
           Description = "Tags, seperate tags with comma and key:value with semicolon.",
-          GroupName = "KeyVault",
           Name = "Secret Tags",
           ShortName = "KeyVaultSecretTags")]
         public Dictionary<string, string> Tags { get; set; }
