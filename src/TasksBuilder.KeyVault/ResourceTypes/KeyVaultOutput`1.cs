@@ -13,8 +13,13 @@ using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 {
 
-    
-    public class KeyVaultOutput<T> : DefaultConsoleReader<KeyVaultOptions>, IConsoleReader<T>
+    public class KeyVaultOutput : DefaultConsoleReader<KeyVaultOptions>
+    {
+        public string VaultName { get; set; }
+
+        public string SecretName { get; set; }
+    }
+    public class KeyVaultOutput<T> : KeyVaultOutput, IConsoleReader<T>
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
 
@@ -23,7 +28,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         /// </summary>
         public KeyVaultOutput()
         {
-            Options = new KeyVaultOptions();
+            Options = new KeyVaultOptions(this);
         }
 
         /// <summary>
@@ -34,12 +39,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         {
             EndpointProvider = endPointProvider;
         }
-       
-        /// <summary>
-        /// Properties accessible.
-        /// </summary>
-        public string SecretName { get { return Options.SecretName; } }
-        public string VaultName { get { return Options.VaultName; } }
+
         public Dictionary<string,string> Tags { get { return Options.Tags; } }
 
         /// <summary>
