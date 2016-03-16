@@ -146,7 +146,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
                     var fac = (Activator.CreateInstance(resourceType) as ITaskInputFactory);
-                    results.Add(fac.GenerateTasks(groupName, defaultTask,sd));
+                    var tasks = fac.GenerateTasks(groupName, defaultTask, sd);
+                    foreach (var iput in tasks.Inputs)
+                        iput.GroupName = iput.GroupName ?? defaultTask.GroupName;
+                    results.Add(tasks);
 
                 }
                 else {

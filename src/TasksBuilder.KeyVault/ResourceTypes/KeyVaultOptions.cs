@@ -18,13 +18,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
             this.options = options;
         }
         [ArmResourceIdPicker("Microsoft.KeyVault/vaults", "2015-06-01")]
-        [Display(Description = "The keyvault namespace", Name = "KeyVault Name", GroupName = "KeyVault")]
+        [Display(Description = "The keyvault namespace", Name = "KeyVault Name")]
         [Required]
         [Option("KeyVaultName")]
         public string VaultName { get { return options.VaultName; } set { options.VaultName = value.StartsWith("/subscriptions") ? value.Split('/').Last() :value; } }
 
         [ArmResourceProviderPicker("$(KeyVaultName)","secrets", "2015-06-01")]
-        [Display(Description = "The keyvault secret name to store value in", Name = "Secret Name", GroupName = "KeyVault")]
+        [Display(Description = "The keyvault secret name to store value in", Name = "Secret Name")]
         [Required]
         [Option("SecretName")]
         public string SecretName { get { return options.SecretName; } set { options.SecretName = value.StartsWith("/subscriptions")? value.Substring(value.IndexOf("secrets/")+ "secrets/".Length).Split('/').First():value; } }
