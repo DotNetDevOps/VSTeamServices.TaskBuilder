@@ -9,35 +9,42 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
 {
+
     public class SourceDefinitionAttribute : Attribute
     {
-       
-        public SourceDefinitionAttribute(Type connectedService, string endpoint, string selector, string keySelector=null) 
+        bool _ignore;
+        public SourceDefinitionAttribute(Type connectedService, string endpoint, string selector, string keySelector = null, bool ignore=false)
         {
             ConnectedService = connectedService;
             Endpoint = endpoint;
             Selector = selector;
             KeySelector = keySelector;
+            _ignore = ignore;
         }
 
         public Type ConnectedService { get; private set; }
 
-        public string Endpoint { get;private set; }
+        public string Endpoint { get; private set; }
         public string KeySelector { get; internal set; }
         public string Selector { get; private set; }
+
+        public bool Ignore {
+            get { return _ignore || string.IsNullOrWhiteSpace(Endpoint); }
+        }
     }
+
     public class ConnectedServiceRelationAttribute : SourceDefinitionAttribute
     {
-        public ConnectedServiceRelationAttribute(Type connectedService) : base(connectedService,null,null)
+        public ConnectedServiceRelationAttribute(Type connectedService) : base(connectedService, null, null)
         {
-           
+
         }
     }
     public class ResourceGrounPickerAttribute : SourceDefinitionAttribute
     {
         public ResourceGrounPickerAttribute(Type connectedService)
-            :base(  
-                 connectedService, 
+            : base(
+                 connectedService,
                  "https://management.azure.com/subscriptions/$(authKey.SubscriptionId)/resourcegroups?api-version=2015-01-01",
                  "jsonpath:$.value[*].name"
                  )
@@ -46,6 +53,50 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
         }
     }
 
+
+    public class LocationPickerAttribute : SourceDefinitionAttribute
+    {
+
+
+
+        public LocationPickerAttribute(Type connectedServiceRelation)
+           : base(
+                 connectedServiceRelation,
+                 "https://management.azure.com/subscriptions/$(authKey.SubscriptionId)/locations?api-version=2016-02-01",
+                 "jsonpath:$.value[*].displayName",
+                 "jsonpath:$.value[*].name"
+                 )
+        {
+
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true,Inherited =true)]
+    public class ParameterSourceDefinitionAttribute :SourceDefinitionAttribute{
+
+        public string ParameterName { get; private set; }
+        public ParameterSourceDefinitionAttribute(Type connectedServiceRelation, string parameterName, string endpoint, string selector, string keySelector = null)
+            :base(connectedServiceRelation,endpoint,selector,keySelector,true)
+        {
+            ParameterName = parameterName;
+        }
+    }
+  
+    public class ParameterLocationPickerAttribute : ParameterSourceDefinitionAttribute
+    {
+
+        public ParameterLocationPickerAttribute(Type connectedServiceRelation,string parameterName)
+           : base(
+                 connectedServiceRelation,
+                 parameterName,
+                 "https://management.azure.com/subscriptions/$(authKey.SubscriptionId)/locations?api-version=2016-02-01",
+                 "jsonpath:$.value[*].displayName",
+                 "jsonpath:$.value[*].name"
+                 )
+        {
+
+        }
+    }
     public class ArmResourceIdPickerAttribute : SourceDefinitionAttribute
     {
         public ArmResourceIdPickerAttribute(string provider, string apiVersion)
@@ -90,8 +141,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
         public string GetAuthKey()
         {
            var member= _propGetter.Body as MemberExpression;
-            return $"$({TaskHelper.GetVariableName(member.Member)})";
-
+            var variable= $"$({TaskHelper.GetVariableName(member.Member)})";
+            return variable;
         }
 
         //public PropertyInfo GetPropertyInfo(TOwner owner)

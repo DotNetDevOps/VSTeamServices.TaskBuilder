@@ -12,19 +12,25 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
     public static class ParamterTypeGenerator
     {
 
-        public static Object CreateNewObject(JObject parameters)
+        public static Object CreateFromParameters(JObject parameters)
         {
             var myType = CompileResultType(parameters);
             return Activator.CreateInstance(myType);
         }
-        public static Type CompileResultType(JObject parameters)
+        public static Object CreateFromVariables(JObject variables, string prefix)
         {
+            var myType = CompileResultType(variables,prefix);
+            return Activator.CreateInstance(myType);
+        }
+        public static Type CompileResultType(JObject variablesOrParameters, string prefix=null)
+        {
+            prefix = prefix ?? string.Empty;
             TypeBuilder tb = GetTypeBuilder();
             ConstructorBuilder constructor = tb.DefineDefaultConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
 
             // NOTE: assuming your list contains Field objects with fields FieldName(string) and FieldType(Type)
-            foreach (var field in parameters.OfType<JProperty>())
-                CreateProperty(tb, field.Name, field.Value as JObject);
+            foreach (var field in variablesOrParameters.OfType<JProperty>())
+                CreateProperty(tb, $"{prefix}{field.Name}", field.Value);
 
             Type objectType = tb.CreateType();
             return objectType;
@@ -47,9 +53,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             return tb;
         }
 
-        private static void CreateProperty(TypeBuilder tb, string propertyName, JObject paramter)
+        private static void CreateProperty(TypeBuilder tb, string propertyName, JToken parameterOrVariable)
         {
-            var propertyType = GetType(paramter);
+            var propertyType = GetType(parameterOrVariable);
             FieldBuilder fieldBuilder = tb.DefineField("_" + propertyName, propertyType, FieldAttributes.Private);
 
             PropertyBuilder propertyBuilder = tb.DefineProperty(propertyName, PropertyAttributes.HasDefault, propertyType, null);
@@ -65,7 +71,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             getIl.Emit(OpCodes.Ret);
 
             MethodBuilder setPropMthdBldr =
-                tb.DefineMethod("set_" + propertyName,
+                tb.DefineMethod("set_" + propertyName.Replace("_",""),
                   MethodAttributes.Public |
                   MethodAttributes.SpecialName |
                   MethodAttributes.HideBySig,
@@ -88,9 +94,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             propertyBuilder.SetSetMethod(setPropMthdBldr);
         }
 
-        private static Type GetType(JObject propertyType)
+        private static Type GetType(JToken token)
         {
-            var type = propertyType.SelectToken("type").ToObject<string>().ToLower();
+            if (token.Type == JTokenType.String)
+                return typeof(string);
+            var parameterObj = token as JObject;
+            var type = parameterObj.SelectToken("type").ToObject<string>().ToLower();
             switch (type)
             {
                 case "string":

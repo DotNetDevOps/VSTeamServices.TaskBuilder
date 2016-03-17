@@ -24,7 +24,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
 
        
 
-        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, SourceDefinitionAttribute parent)
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
         {
             defaultTask.Type = "string";
 

@@ -52,13 +52,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         {
             return TemplateProvider(options);
         }
-        public override JObject LoadTemplateParameters()
-        {
-            return LoadTemplate(null).SelectToken("parameters") as JObject ?? new JObject();
-        }
+        //public override JObject LoadTemplateParameters()
+        //{
+        //    return LoadTemplate(null).SelectToken("parameters") as JObject ?? new JObject();
+        //}
     }
 
     public abstract class ArmTemplateDeployment<T> : IConsoleExecutor<T>, ITaskInputFactory, IConsoleReader<T>
+          where T : class
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
 
@@ -70,10 +71,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         }
         public JObject Output { get; set; }
         public JObject Parameters { get; set; }
+        public JObject Variables { get;  set; }
         public ResourceGroupOptions ResourceGroupOptions { get; set; }
+       
 
 
-        public abstract JObject LoadTemplateParameters();
+        //  public abstract JObject LoadTemplateParameters();
+        //   public abstract JObject LoadTemplateVariables();
         public abstract JObject LoadTemplate(T options);
 
         public JProperty CreateParameter(string name)
@@ -88,8 +92,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 Console.WriteLine($"Failed to read deploymentObj: {JObject.FromObject(ResourceGroupOptions).ToString(Formatting.Indented)} ");
                 return;
             }
-
-            var parametersObj = ParamterTypeGenerator.CreateNewObject(LoadTemplateParameters());
+            var template = LoadTemplate(options);
+            var parametersObj = ParamterTypeGenerator.CreateFromParameters(template.SelectToken("parameters") as JObject ?? new JObject());
             if (!parser.ParseArguments(args, parametersObj))
             {
                 Console.WriteLine($"Failed to read parameterObj: {JObject.FromObject(parametersObj).ToString(Formatting.Indented)} ");
@@ -102,6 +106,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                         .Select(p => ResourceManagerHelper.CreateValue(p.Name, p.Value)
                 ));
 
+            var prefix = "var";
+            var variablesObj = ParamterTypeGenerator.CreateFromVariables(template.SelectToken("variables") as JObject ?? new JObject(),prefix);
+            if (!parser.ParseArguments(args, variablesObj))
+            {
+                Console.WriteLine($"Failed to read parameterObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
+                return;
+            }
+            Variables = new JObject(JObject.FromObject(variablesObj).Properties()
+                .Where(p => p.Value.Type !=  JTokenType.Null && !string.IsNullOrWhiteSpace(p.Value.ToString()))
+                .Select(p => new JProperty(p.Name.Substring(prefix.Length), p.Value)));
+                
         }
 
         public string GetOutputValue(string name)
@@ -110,12 +125,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
         }
            
-        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, SourceDefinitionAttribute parent)
+        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
         {
             
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
-
-            var inputs = LoadTemplateParameters().OfType<JProperty>().Select(t =>
+            var template = LoadTemplate(null);
+            var inputs = template.SelectToken("parameters").OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;
                 var variableName = t.Name;
@@ -143,10 +158,49 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     Required = string.IsNullOrEmpty(obj.SelectToken("defaultValue")?.Value<string>()),
                     Options = options
                 };
+
             }).ToArray();
+
+           
+          
 
             var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions),parent);
             result.Inputs.AddRange(inputs);
+
+            var attrs = parent?.GetCustomAttributes<ParameterSourceDefinitionAttribute>().ToArray() ?? new ParameterSourceDefinitionAttribute[0];
+            foreach (var sd in attrs)
+            {
+               
+                    result.SourceDefinitions.Add(new SourceDefinition
+                    {
+                        Endpoint = sd.Endpoint,
+                        AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
+                        Selector = sd.Selector,
+                        KeySelector = sd.KeySelector ?? "",
+                        Target = sd.ParameterName
+                    });
+                
+            }
+
+            var variables = template.SelectToken("variables").OfType<JProperty>().Select(t =>
+              new TaskInput()
+              {
+                  Name = $"var{t.Name}",
+                  DefaultValue = t.Value.ToString(),
+                  GroupName = "ArmVars",
+                  Label = t.Name,
+                  Type = "string",
+              }
+            ).ToArray();
+            if (variables.Any())
+            {
+                result.Inputs.AddRange(variables);
+                result.Groups.Add(new Group
+                {
+                     DisplayName = "Arm Template Variables",
+                     Name ="ArmVars", IsExpanded = false,
+                });
+            }
 
             return result;
 
@@ -175,6 +229,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             var template = LoadTemplate(options);
 
+            foreach(var variable in Variables.Properties())
+            {
+                template.SelectToken($"variables.{variable.Name}").Replace(variable.Value);
+            }
 
             if (ResourceGroupOptions.CreateTemplatesOnly)
             {

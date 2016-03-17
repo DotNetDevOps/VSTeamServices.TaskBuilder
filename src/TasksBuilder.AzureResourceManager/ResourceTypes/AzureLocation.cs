@@ -2,6 +2,7 @@
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
 {
     using System;
+    using System.Reflection;
     using Attributes;
     using Newtonsoft.Json.Linq;
     using SInnovations.VSTeamServices.TasksBuilder.Models;
@@ -12,7 +13,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
     {
        
 
-        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, SourceDefinitionAttribute parent)
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
         {
             defaultTask.Type = "pickList";
             defaultTask.Properties.EditableOptions = "True";

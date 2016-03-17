@@ -81,7 +81,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             var d = property.GetCustomAttribute<DisplayAttribute>();
             return d?.GetOrder() ?? 0;
         }
-        public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, SourceDefinitionAttribute parent)
+        public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, PropertyInfo parent)
         {
 
 
@@ -125,12 +125,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                 if (sd != null)
                 {
                     try {
-                        if (!string.IsNullOrEmpty(sd.Endpoint))
+                        if (!sd.Ignore)
                         {
                             results.SourceDefinitions.Add(new SourceDefinition
                             {
                                 Endpoint = sd.Endpoint,
-                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
+                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
                                 Selector = sd.Selector,
                                 KeySelector = sd.KeySelector ?? "",
                                 Target = variableName
@@ -146,7 +146,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
                     var fac = (Activator.CreateInstance(resourceType) as ITaskInputFactory);
-                    var tasks = fac.GenerateTasks(groupName, defaultTask, sd);
+                    var tasks = fac.GenerateTasks(groupName, defaultTask, property);
                     foreach (var iput in tasks.Inputs)
                         iput.GroupName = iput.GroupName ?? defaultTask.GroupName;
                     results.Add(tasks);

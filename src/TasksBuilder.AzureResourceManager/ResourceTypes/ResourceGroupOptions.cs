@@ -43,6 +43,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         [Option("ResourceGroup")]
         public string ResourceGroup { get; set; }
 
+        [LocationPickerAttribute(typeof(ConnectedServiceRelation))]
         [VisibleRule("CreateTemplatesOnly = false")]
         [Option("ResourceGroupLocation")]
         [Required]

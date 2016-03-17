@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommandLine;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes;
-using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+﻿
 
 namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using CommandLine;
+    using SInnovations.VSTeamServices.TasksBuilder.Attributes;
+    using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+
+    /// <summary>
+    /// Parsing options for <see cref="KeyVaultOutput"/> that is used to generate input options in vsts task.
+    /// </summary>
     public class KeyVaultOptions
     {
         private readonly KeyVaultOutput options;
@@ -28,6 +29,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         [Required]
         [Option("SecretName")]
         public string SecretName { get { return options.SecretName; } set { options.SecretName = value.StartsWith("/subscriptions")? value.Substring(value.IndexOf("secrets/")+ "secrets/".Length).Split('/').First():value; } }
+
 
 
         [Display(ResourceType = typeof(Tags),
