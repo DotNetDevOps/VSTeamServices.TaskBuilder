@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Azure.KeyVault;
+using Newtonsoft.Json.Linq;
 using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
@@ -21,6 +23,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
     }
     public class KeyVaultOutput<T> : KeyVaultOutput, IConsoleReader<T>
     {
+        private Lazy<KeyVaultClient> _vaultClient;
+
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
 
         /// <summary>
@@ -53,18 +57,58 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
             return !(string.IsNullOrEmpty(VaultName) || string.IsNullOrEmpty(SecretName));
         }
 
-        public void SetSecret(string value, Dictionary<string, string> tags = null, string contentType = null, DateTime? notbefore = null)
+        public void SetSecret(string value, Dictionary<string, string> tags = null, string contentType = null, DateTime? notbefore = null, bool? enabled=null,DateTime? expires=null)
         {
-            var vaultUri = $"https://{Options.VaultName}.vault.azure.net";
-            var keyvaultClient = new KeyVaultClient((_, __, c) => Task.FromResult(AccessToken));
-
-            keyvaultClient.SetSecretAsync(vaultUri, Options.SecretName, value, tags, contentType, new SecretAttributes { NotBefore = notbefore }).GetAwaiter().GetResult();
+            var vaultUri = $"https://{VaultName}.vault.azure.net";
+             KeyVaultClient.SetSecretAsync(vaultUri, Options.SecretName, value, tags, contentType, new SecretAttributes { NotBefore = notbefore, Enabled=enabled, Expires=expires}).GetAwaiter().GetResult();
 
         }
+        public async Task SetSecretIfNotExistAsync(string value, Dictionary<string, string> tags = null, string contentType = null, DateTime? notbefore = null, bool? enabled = null, DateTime? expires = null)
+        {
+            var vaultUri = $"https://{VaultName}.vault.azure.net";
+            var secrets = await KeyVaultClient.GetSecretsAsync(vaultUri);
+
+            if (secrets.Value == null || !secrets.Value.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
+            {
+                await KeyVaultClient.SetSecretAsync(vaultUri, Options.SecretName, value, tags, contentType, new SecretAttributes { NotBefore = notbefore, Enabled = enabled, Expires = expires });
+            }
+        }
+        public async Task SaveCertificateAsync(byte[] cert, string password, Dictionary<string, string> tags = null, TimeSpan? saveIfCurrentExpiresWithin=null)
+        {
+            var certBase64 = Convert.ToBase64String(cert);
+            var value = Convert.ToBase64String(Encoding.UTF8.GetBytes(new JObject(
+                new JProperty("data", certBase64),
+                new JProperty("dataType", "pfx"),
+                new JProperty("password", password)
+                ).ToString()));
+
+            var x509Certificate = new X509Certificate2(cert, password, X509KeyStorageFlags.Exportable);
+            tags["thumbprint"]= x509Certificate.Thumbprint;
+            tags["friendlyName"]= x509Certificate.FriendlyName;
+
+            var vaultUri = $"https://{VaultName}.vault.azure.net";
+            var secrets = await KeyVaultClient.GetSecretsAsync(vaultUri);
+
+            if (saveIfCurrentExpiresWithin == null || secrets.Value == null || !secrets.Value.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
+            {
+                await KeyVaultClient.SetSecretAsync(vaultUri, SecretName, value, tags, "application/x-pkcs12", new SecretAttributes { NotBefore = x509Certificate.NotBefore, Expires = x509Certificate.NotAfter });
+            }
+            else
+            {
+                var last = secrets.Value.Single(s => s.Id == vaultUri + "/secrets/" + SecretName);
+                if(( last.Attributes.Expires - DateTime.UtcNow) < saveIfCurrentExpiresWithin)
+                {
+                    await KeyVaultClient.SetSecretAsync(vaultUri, SecretName, value, tags, "application/x-pkcs12", new SecretAttributes { NotBefore = x509Certificate.NotBefore, Expires = x509Certificate.NotAfter });
+                }
+
+            }
+        }
+        public KeyVaultClient KeyVaultClient { get { return _vaultClient.Value; } }
 
         public void OnConsoleParsing(Parser parser, string[] args, T options, PropertyInfo info)
         {
             AccessToken = EndpointProvider(options).GetToken("https://vault.azure.net");
+            _vaultClient = new Lazy<KeyVaultClient>(() => new KeyVaultClient((_, __, c) => Task.FromResult(AccessToken)));
         }
 
        
