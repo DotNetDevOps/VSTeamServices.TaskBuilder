@@ -13,7 +13,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
     public class SourceDefinitionAttribute : Attribute
     {
         bool _ignore;
-        public SourceDefinitionAttribute(Type connectedService, string endpoint, string selector, string keySelector = null, bool ignore=false)
+        public SourceDefinitionAttribute(Type connectedService, string endpoint, string selector, string keySelector = null, bool ignore = false)
         {
             ConnectedService = connectedService;
             Endpoint = endpoint;
@@ -71,21 +71,21 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
         }
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true,Inherited =true)]
-    public class ParameterSourceDefinitionAttribute :SourceDefinitionAttribute{
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+    public class ParameterSourceDefinitionAttribute : SourceDefinitionAttribute {
 
         public string ParameterName { get; private set; }
         public ParameterSourceDefinitionAttribute(Type connectedServiceRelation, string parameterName, string endpoint, string selector, string keySelector = null)
-            :base(connectedServiceRelation,endpoint,selector,keySelector,true)
+            : base(connectedServiceRelation, endpoint, selector, keySelector, true)
         {
             ParameterName = parameterName;
         }
     }
-  
+
     public class ParameterLocationPickerAttribute : ParameterSourceDefinitionAttribute
     {
 
-        public ParameterLocationPickerAttribute(Type connectedServiceRelation,string parameterName)
+        public ParameterLocationPickerAttribute(Type connectedServiceRelation, string parameterName)
            : base(
                  connectedServiceRelation,
                  parameterName,
@@ -116,7 +116,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
         public ArmResourceProviderPickerAttribute(string id, string subTypes, string apiVersion)
             : base(
                  null,
-                 $"https://management.azure.com/{id}/{subTypes??""}?api-version={apiVersion}",
+                 $"https://management.azure.com/{id}/{subTypes ?? ""}?api-version={apiVersion}",
                  "jsonpath:$.value[*].name",
                  "jsonpath:$.value[*].id"
                  )
@@ -129,7 +129,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
     {
         string GetAuthKey();
     }
-    public class PropertyRelation<TOwner, TProperty> : AuthKeyProvider
+    public  abstract class PropertyRelation{
+        public abstract object GetProperty(object owner);
+    }
+    public class PropertyRelation<TOwner, TProperty> : PropertyRelation, AuthKeyProvider
     {
         private readonly Expression<Func<TOwner, TProperty>> _propGetter;
 
@@ -144,7 +147,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
             var variable= $"$({TaskHelper.GetVariableName(member.Member)})";
             return variable;
         }
-
+        public override object GetProperty(object owner)
+        {
+            return _propGetter.Compile().DynamicInvoke(new object[] { owner });
+        }
         //public PropertyInfo GetPropertyInfo(TOwner owner)
         //{
         //    return _propGetter(owner);

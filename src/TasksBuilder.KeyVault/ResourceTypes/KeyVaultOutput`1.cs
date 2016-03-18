@@ -25,7 +25,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
     {
         private Lazy<KeyVaultClient> _vaultClient;
 
-        public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
+        //public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
 
         /// <summary>
         /// Parameter less constructor for generating Options.
@@ -35,14 +35,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
             Options = new KeyVaultOptions(this);
         }
 
-        /// <summary>
-        /// Runtime constructor
-        /// </summary>
-        /// <param name="endPointProvider"></param>
-        public KeyVaultOutput(Func<T, ServiceEndpoint> endPointProvider) : this()
-        {
-            EndpointProvider = endPointProvider;
-        }
+        ///// <summary>
+        ///// Runtime constructor
+        ///// </summary>
+        ///// <param name="endPointProvider"></param>
+        //public KeyVaultOutput(Func<T, ServiceEndpoint> endPointProvider) : this()
+        //{
+        //    EndpointProvider = endPointProvider;
+        //}
 
         public Dictionary<string,string> Tags { get { return Options.Tags; } }
 
@@ -107,7 +107,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 
         public void OnConsoleParsing(Parser parser, string[] args, T options, PropertyInfo info)
         {
-            AccessToken = EndpointProvider(options).GetToken("https://vault.azure.net");
+            var cr = info.GetCustomAttribute<ConnectedServiceRelationAttribute>();
+            var propertyRelation = (PropertyRelation)Activator.CreateInstance(cr.ConnectedService);
+            var connectedService = (ServiceEndpoint)propertyRelation.GetProperty(options) ;
+            AccessToken = connectedService.GetToken("https://vault.azure.net");
+
             _vaultClient = new Lazy<KeyVaultClient>(() => new KeyVaultClient((_, __, c) => Task.FromResult(AccessToken)));
         }
 
