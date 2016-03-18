@@ -22,6 +22,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             var myType = CompileResultType(variables,prefix);
             return Activator.CreateInstance(myType);
         }
+
+        public static Object CreateFromOutputs(JObject outputs, string prefix)
+        {
+            var myType = CompileResultType(outputs, prefix);
+            return Activator.CreateInstance(myType);
+        }
         public static Type CompileResultType(JObject variablesOrParameters, string prefix=null)
         {
             prefix = prefix ?? string.Empty;
@@ -102,6 +108,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             var type = parameterObj.SelectToken("type").ToObject<string>().ToLower();
             switch (type)
             {
+                case "object":
                 case "string":
                 case "securestring":
                     return typeof(string);
@@ -111,7 +118,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     return typeof(bool?);
                 case "int":
                     return typeof(int?);
-                   
+             
             }
             throw new NotImplementedException($"{type} not implemented");
         }

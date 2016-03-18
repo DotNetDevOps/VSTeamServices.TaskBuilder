@@ -73,7 +73,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         public JObject Parameters { get; set; }
         public JObject Variables { get;  set; }
         public ResourceGroupOptions ResourceGroupOptions { get; set; }
-       
+        public JObject OutVariables { get; private set; }
+
 
 
         //  public abstract JObject LoadTemplateParameters();
@@ -110,13 +111,24 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             var variablesObj = ParamterTypeGenerator.CreateFromVariables(template.SelectToken("variables") as JObject ?? new JObject(),prefix);
             if (!parser.ParseArguments(args, variablesObj))
             {
-                Console.WriteLine($"Failed to read parameterObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
+                Console.WriteLine($"Failed to read variablesObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
                 return;
             }
             Variables = new JObject(JObject.FromObject(variablesObj).Properties()
                 .Where(p => p.Value.Type !=  JTokenType.Null && !string.IsNullOrWhiteSpace(p.Value.ToString()))
                 .Select(p => new JProperty(p.Name.Substring(prefix.Length), p.Value)));
-                
+
+            var outprefix = "out";
+            var outputVariablesObj = ParamterTypeGenerator.CreateFromOutputs(template.SelectToken("outputs") as JObject ?? new JObject(), outprefix);
+            if (!parser.ParseArguments(args, outputVariablesObj))
+            {
+                Console.WriteLine($"Failed to read outputVariablesObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
+                return;
+            }
+
+            OutVariables = new JObject(JObject.FromObject(outputVariablesObj).Properties()
+               .Where(p => p.Value.Type != JTokenType.Null && !string.IsNullOrWhiteSpace(p.Value.ToString()))
+               .Select(p => new JProperty(p.Name.Substring(outprefix.Length), p.Value)));
         }
 
         public string GetOutputValue(string name)
@@ -182,7 +194,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 
             }
 
-            var variables = template.SelectToken("variables").OfType<JProperty>().Select(t =>
+            var variables = template.SelectToken("variables")?.OfType<JProperty>().Select(t =>
               new TaskInput()
               {
                   Name = $"var{t.Name}",
@@ -192,7 +204,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                   Type = "string",
               }
             ).ToArray();
-            if (variables.Any())
+
+            if (variables?.Any() ?? false)
             {
                 result.Inputs.AddRange(variables);
                 result.Groups.Add(new Group
@@ -201,6 +214,28 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                      Name ="ArmVars", IsExpanded = false,
                 });
             }
+
+            var outputs = template.SelectToken("outputs")?.OfType<JProperty>().Select(t =>
+              new TaskInput()
+              {
+                  Name = $"out{t.Name}",
+                  DefaultValue = t.Name,
+                  GroupName = "ArmOutputVariables",
+                  Label = t.Name,
+                  Type = "string",
+              }
+            ).ToArray();
+            if (outputs?.Any() ?? false)
+            {
+                result.Inputs.AddRange(outputs);
+                result.Groups.Add(new Group
+                {
+                    DisplayName = "Copy ARM template outputs to variables",
+                    Name = "ArmOutputVariables",
+                    IsExpanded = false,
+                });
+            }
+
 
             return result;
 
@@ -277,6 +312,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
 
+            foreach(var prop in OutVariables)
+            {
+                
+                var value = Output.SelectToken($"{prop.Key}.value")?.ToString();
+                if (!string.IsNullOrWhiteSpace(value))
+                    TaskHelper.SetVariable(prop.Value.ToString(), value);
+            }
 
 
 

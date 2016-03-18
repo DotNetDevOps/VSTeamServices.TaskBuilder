@@ -175,7 +175,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
 
 
-        private static string GlobPathString = typeof(GlobPath).ToString();
+       // private static string GlobPathString = typeof(GlobPath).ToString();
 
         private static string GetTaskInputType(Type propertyType, PropertyInfo propertyInfo)
         {
