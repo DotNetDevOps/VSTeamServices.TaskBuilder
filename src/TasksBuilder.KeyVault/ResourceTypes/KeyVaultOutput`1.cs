@@ -14,7 +14,17 @@ using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 {
+    public static class KeyVaultOutputExtensions
+    {
+        public static bool IsConfigured(this KeyVaultOutput kvo)
+        {
+            if (kvo == null)
+                return false;
 
+            return !string.IsNullOrEmpty(kvo.VaultName) && !string.IsNullOrEmpty(kvo.SecretName);
+        }
+    
+    }
     public class KeyVaultOutput : DefaultConsoleReader<KeyVaultOptions>
     {
         public string VaultName { get; set; }
@@ -52,10 +62,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 
         protected string AccessToken { get; set; }
 
-        public bool IsPresent()
-        {
-            return !(string.IsNullOrEmpty(VaultName) || string.IsNullOrEmpty(SecretName));
-        }
+      
 
         public void SetSecret(string value, Dictionary<string, string> tags = null, string contentType = null, DateTime? notbefore = null, bool? enabled=null,DateTime? expires=null)
         {
