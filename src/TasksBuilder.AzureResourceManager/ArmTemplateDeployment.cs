@@ -114,9 +114,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 Console.WriteLine($"Failed to read variablesObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
                 return;
             }
-            Variables = new JObject(JObject.FromObject(variablesObj).Properties()
-                .Where(p => p.Value.Type !=  JTokenType.Null && !string.IsNullOrWhiteSpace(p.Value.ToString()))
-                .Select(p => new JProperty(p.Name.Substring(prefix.Length), p.Value)));
+            Variables = JObject.FromObject(variablesObj);
 
             var outprefix = "out";
             var outputVariablesObj = ParamterTypeGenerator.CreateFromOutputs(template.SelectToken("outputs") as JObject ?? new JObject(), outprefix);
@@ -126,9 +124,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 return;
             }
 
-            OutVariables = new JObject(JObject.FromObject(outputVariablesObj).Properties()
-               .Where(p => p.Value.Type != JTokenType.Null && !string.IsNullOrWhiteSpace(p.Value.ToString()))
-               .Select(p => new JProperty(p.Name.Substring(outprefix.Length), p.Value)));
+            OutVariables = JObject.FromObject(outputVariablesObj);
         }
 
         public string GetOutputValue(string name)
@@ -266,7 +262,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             foreach(var variable in Variables.Properties())
             {
-                template.SelectToken($"variables.{variable.Name}").Replace(variable.Value);
+                if(variable.Value != null&&variable.Value.Type != JTokenType.Null)
+                    template.SelectToken($"variables.{variable.Name}").Replace(variable.Value);
             }
 
             if (ResourceGroupOptions.CreateTemplatesOnly)
@@ -315,9 +312,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             foreach(var prop in OutVariables)
             {
                 
-                var value = Output.SelectToken($"{prop.Key}.value")?.ToString();
-                if (!string.IsNullOrWhiteSpace(value))
-                    TaskHelper.SetVariable(prop.Value.ToString(), value);
+                var value = Output.SelectToken($"{prop.Key}.value");
+                if (value != null)
+                    TaskHelper.SetVariable(prop.Value.ToString(), JsonConvert.SerializeObject(value));
             }
 
 

@@ -36,7 +36,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             // NOTE: assuming your list contains Field objects with fields FieldName(string) and FieldType(Type)
             foreach (var field in variablesOrParameters.OfType<JProperty>())
-                CreateProperty(tb, $"{prefix}{field.Name}", field.Value);
+                CreateProperty(tb, field.Name, field.Value, $"{prefix}{field.Name}");
 
             Type objectType = tb.CreateType();
             return objectType;
@@ -59,9 +59,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             return tb;
         }
 
-        private static void CreateProperty(TypeBuilder tb, string propertyName, JToken parameterOrVariable)
+        private static void CreateProperty(TypeBuilder tb, string propertyName, JToken parameterOrVariable, string consoleArg)
         {
-            var propertyType = GetType(parameterOrVariable);
+
+            object defaultValue = null;
+            var propertyType = GetType(parameterOrVariable,out defaultValue);
+           
             FieldBuilder fieldBuilder = tb.DefineField("_" + propertyName, propertyType, FieldAttributes.Private);
 
             PropertyBuilder propertyBuilder = tb.DefineProperty(propertyName, PropertyAttributes.HasDefault, propertyType, null);
@@ -69,8 +72,18 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             ILGenerator getIl = getPropMthdBldr.GetILGenerator();
 
             var ci = typeof(OptionAttribute).GetConstructor(new Type[] { typeof(string) });
-            var builder = new CustomAttributeBuilder(ci, new object[] { propertyName });
-            propertyBuilder.SetCustomAttribute(builder);
+            if (defaultValue == null)
+            {
+                var builder = new CustomAttributeBuilder(ci, new object[] { consoleArg });
+                propertyBuilder.SetCustomAttribute(builder);
+            }
+            else
+            {
+                PropertyInfo conProperty = typeof(OptionAttribute).GetProperty("DefaultValue");
+                var builder = new CustomAttributeBuilder(ci, new object[] { consoleArg }, new[] { conProperty }, new object[] { defaultValue});
+                propertyBuilder.SetCustomAttribute(builder);
+
+            }
 
             getIl.Emit(OpCodes.Ldarg_0);
             getIl.Emit(OpCodes.Ldfld, fieldBuilder);
@@ -100,24 +113,32 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             propertyBuilder.SetSetMethod(setPropMthdBldr);
         }
 
-        private static Type GetType(JToken token)
+      
+
+        private static Type GetType(JToken token, out object defaultValue)
         {
+            defaultValue = null;
+
             if (token.Type == JTokenType.String)
                 return typeof(string);
+            if (token.Type == JTokenType.Boolean)
+                return typeof(bool);
+
+
             var parameterObj = token as JObject;
             var type = parameterObj.SelectToken("type").ToObject<string>().ToLower();
+            defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<object>();
             switch (type)
             {
                 case "object":
                 case "string":
                 case "securestring":
-                    return typeof(string);
                 case "picklist":
                     return typeof(string);
                 case "bool":
-                    return typeof(bool?);
+                    return typeof(bool);
                 case "int":
-                    return typeof(int?);
+                    return typeof(int);
              
             }
             throw new NotImplementedException($"{type} not implemented");
