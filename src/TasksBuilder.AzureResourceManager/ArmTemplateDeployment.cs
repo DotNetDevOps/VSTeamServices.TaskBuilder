@@ -182,7 +182,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     result.SourceDefinitions.Add(new SourceDefinition
                     {
                         Endpoint = sd.Endpoint,
-                        AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
+                        AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider)?.GetAuthKey(),
                         Selector = sd.Selector,
                         KeySelector = sd.KeySelector ?? "",
                         Target = sd.ParameterName
