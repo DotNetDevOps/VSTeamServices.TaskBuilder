@@ -178,11 +178,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             var attrs = parent?.GetCustomAttributes<ParameterSourceDefinitionAttribute>().ToArray() ?? new ParameterSourceDefinitionAttribute[0];
             foreach (var sd in attrs)
             {
-               
+                var authKeyProvier = sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService;
+
                     result.SourceDefinitions.Add(new SourceDefinition
                     {
                         Endpoint = sd.Endpoint,
-                        AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider)?.GetAuthKey(),
+                        AuthKey = authKeyProvier==null?null:(Activator.CreateInstance(authKeyProvier) as AuthKeyProvider)?.GetAuthKey(),
                         Selector = sd.Selector,
                         KeySelector = sd.KeySelector ?? "",
                         Target = sd.ParameterName
