@@ -70,11 +70,16 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
             return d?.GroupName;
         }
-        public static bool GetRequired(PropertyInfo property)
+        public static bool GetRequired(PropertyInfo property, PropertyInfo parent)
         {
             var i = property.GetCustomAttribute<BaseOptionAttribute>();
             var r = property.GetCustomAttribute<RequiredAttribute>();
-            return (r == null ? i?.Required ??false: true);
+            var ip = property.GetCustomAttribute<BaseOptionAttribute>();
+            var rp = property.GetCustomAttribute<RequiredAttribute>();
+
+            var p = (rp == null ? ip?.Required ?? false : true);
+
+            return (r == null ? i?.Required ??p: true);
         }
         public static int GetOrder(PropertyInfo property)
         {
@@ -110,7 +115,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                     DefaultValue = GetTaskDefaultValue(property),
                     Label = GetLabel(property),
                     GroupName = groupName,
-                    Required = GetRequired(property),
+                    Required = GetRequired(property, parent),
                     VisibleRule = property.GetCustomAttribute<VisibleRuleAttribute>()?.VisibleRule,
                     Order = GetOrder(property),
                 };
