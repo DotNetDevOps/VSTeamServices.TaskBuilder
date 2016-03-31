@@ -80,35 +80,48 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
                 await KeyVaultClient.SetSecretAsync(vaultUri, Options.SecretName, value, tags, contentType, new SecretAttributes { NotBefore = notbefore, Enabled = enabled, Expires = expires });
             }
         }
-        public async Task SaveCertificateAsync(byte[] cert, string password, Dictionary<string, string> tags = null, TimeSpan? saveIfCurrentExpiresWithin=null)
+        public async Task SaveCertificateAsync(Func<byte[]> certGenerator, string password, Dictionary<string, string> tags = null, TimeSpan? saveIfCurrentExpiresWithin = null)
         {
-            var certBase64 = Convert.ToBase64String(cert);
-            var value = Convert.ToBase64String(Encoding.UTF8.GetBytes(new JObject(
-                new JProperty("data", certBase64),
-                new JProperty("dataType", "pfx"),
-                new JProperty("password", password)
-                ).ToString()));
-
-            var x509Certificate = new X509Certificate2(cert, password, X509KeyStorageFlags.Exportable);
-            tags["thumbprint"]= x509Certificate.Thumbprint;
-            tags["friendlyName"]= x509Certificate.FriendlyName;
 
             var vaultUri = $"https://{VaultName}.vault.azure.net";
             var secrets = await KeyVaultClient.GetSecretsAsync(vaultUri);
 
+            Func<Task> setTagsAndReturn = async () =>
+             {
+                 var cert = certGenerator();
+                 var certBase64 = Convert.ToBase64String(cert);
+                 var value = Convert.ToBase64String(Encoding.UTF8.GetBytes(new JObject(
+                     new JProperty("data", certBase64),
+                     new JProperty("dataType", "pfx"),
+                     new JProperty("password", password)
+                     ).ToString()));
+
+                 var x509Certificate = new X509Certificate2(cert, password, X509KeyStorageFlags.Exportable);
+                 tags["thumbprint"] = x509Certificate.Thumbprint;
+                 tags["friendlyName"] = x509Certificate.FriendlyName;
+
+                 await KeyVaultClient.SetSecretAsync(vaultUri, SecretName, value, tags, "application/x-pkcs12", new SecretAttributes { NotBefore = x509Certificate.NotBefore, Expires = x509Certificate.NotAfter });
+
+  
+             };
+
             if (saveIfCurrentExpiresWithin == null || secrets.Value == null || !secrets.Value.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
             {
-                await KeyVaultClient.SetSecretAsync(vaultUri, SecretName, value, tags, "application/x-pkcs12", new SecretAttributes { NotBefore = x509Certificate.NotBefore, Expires = x509Certificate.NotAfter });
-            }
+                await setTagsAndReturn();
+             }
             else
             {
                 var last = secrets.Value.Single(s => s.Id == vaultUri + "/secrets/" + SecretName);
-                if(( last.Attributes.Expires - DateTime.UtcNow) < saveIfCurrentExpiresWithin)
+                if ((last.Attributes.Expires - DateTime.UtcNow) < saveIfCurrentExpiresWithin)
                 {
-                    await KeyVaultClient.SetSecretAsync(vaultUri, SecretName, value, tags, "application/x-pkcs12", new SecretAttributes { NotBefore = x509Certificate.NotBefore, Expires = x509Certificate.NotAfter });
+                    await setTagsAndReturn();
                 }
 
             }
+        }
+        public  Task SaveCertificateAsync(byte[] cert, string password, Dictionary<string, string> tags = null, TimeSpan? saveIfCurrentExpiresWithin=null)
+        {
+            return this.SaveCertificateAsync(() => cert, password, tags, saveIfCurrentExpiresWithin);
         }
         public KeyVaultClient KeyVaultClient { get { return _vaultClient.Value; } }
 
