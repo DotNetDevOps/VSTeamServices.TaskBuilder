@@ -127,17 +127,20 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             var parameterObj = token as JObject;
             var type = parameterObj.SelectToken("type").ToObject<string>().ToLower();
-            defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<object>();
+            
             switch (type)
             {
                 case "object":
                 case "string":
                 case "securestring":
                 case "picklist":
+                    defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<string>();
                     return typeof(string);
                 case "bool":
+                    defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<bool>();
                     return typeof(bool);
                 case "int":
+                    defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<int>();
                     return typeof(int);
              
             }
