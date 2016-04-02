@@ -133,11 +133,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
         }
            
-        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
+        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent,object instance)
         {
             
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
-            var template = LoadTemplate(null);
+            var template = LoadTemplate(instance as T);
             var inputs = template.SelectToken("parameters").OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;
@@ -246,6 +246,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 case "bool":
                     return "boolean";
                 case "int":
+                case "securestring": //Would be cool with this type in vsts also
                     return "string";
                 case "string":
                 case "pickList":

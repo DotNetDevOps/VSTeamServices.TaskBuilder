@@ -4,6 +4,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
 {
     using System;
     using System.Collections.Generic;
+    using System.Net.Http;
     using System.Reflection;
     using Attributes;
     using CommandLine;
@@ -42,6 +43,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
                 }));
             }
             return _result[resourceUri].Value.AccessToken;
+        }
+        public HttpClient GetAuthorizedHttpClient(string resourceUri)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", GetToken(resourceUri));
+            return client;
         }
 
         public void OnConsoleParsing(Parser parser, string[] args, object options, PropertyInfo info)
