@@ -20,21 +20,21 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 {
-    public class ArmTemplateDeployment : ArmTemplateDeployment<ArmTemplateOptions, ResourceSource>
+    public class SimpleArmTemplateDeployment<T> : ArmTemplateDeployment<T, ResourceSource> where T: ArmTemplateOptions<T>, new()
     {
-        public ArmTemplateDeployment() : base(o => o.Source)
+        public SimpleArmTemplateDeployment() : base(o => o.Source)
         {
 
         }
     }
 
-    public class ArmTemplateOptions
+    public class ArmTemplateOptions<T> where T :ArmTemplateOptions<T>, new()
     {
         public ResourceSource Source { get; set; }
         public ArmTemplateOptions(string path, Assembly assembly)
         {
             Tags = new Dictionary<string, string>();
-            ArmDeployment = new ArmTemplateDeployment();
+            ArmDeployment = new SimpleArmTemplateDeployment<T>();
 
             Source = new ResourceSource(path, assembly)
             {
@@ -43,8 +43,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         }
 
 
-        [Display(ResourceType = typeof(ArmTemplateDeployment))]
-        public ArmTemplateDeployment ArmDeployment { get; set; }
+        [Display(ResourceType = typeof(SimpleArmTemplateDeployment<>))]
+        public SimpleArmTemplateDeployment<T> ArmDeployment { get; set; }
 
         [Display(ResourceType = typeof(Tags),
          Description = "Tags, seperate tags with comma and key:value with semicolon.",
@@ -70,7 +70,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
     public class ArmTemplateDeployment<TOptions, TResourceSource> : ArmTemplateDeployment<TOptions>
         where TResourceSource : ResourceSource
-        where TOptions : class
+        where TOptions : class,new()
     {
         public Func<TOptions, TResourceSource> TemplateProvider { get; private set; }
 
@@ -92,7 +92,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
     }
 
     public abstract class ArmTemplateDeployment<T> : IConsoleExecutor<T>, ITaskInputFactory, IConsoleReader<T>
-          where T : class
+          where T : class,new()
     {
         public Func<T, ServiceEndpoint> EndpointProvider { get; private set; }
 
@@ -170,7 +170,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         {
             
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
-            var template = LoadTemplate(default(T));
+            var template = LoadTemplate(new T());
             var inputs = template.SelectToken("parameters").OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;

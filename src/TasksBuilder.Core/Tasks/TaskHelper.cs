@@ -157,7 +157,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                     {
                         fac = property.GetValue(Activator.CreateInstance(programOptionsType)) as ITaskInputFactory;
                     }
-
+                    if(fac==null && resourceType.IsGenericTypeDefinition && resourceType == property.PropertyType.GetGenericTypeDefinition())
+                    {
+                        fac = property.GetValue(Activator.CreateInstance(programOptionsType)) as ITaskInputFactory;
+                    }
                     if(fac==null)
                     {
                         fac = Activator.CreateInstance(resourceType) as ITaskInputFactory;
