@@ -42,15 +42,24 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
 
                 var props = typeof(T).GetProperties().Where(p =>
                     Attribute.IsDefined(p, typeof(DisplayAttribute)))
-                    .Select(p => new { p, a = p.GetCustomAttribute<DisplayAttribute>() })
-                    .Where(p => p.a.ResourceType != null)
-                    .Select(p => new { p.a, p.p, h = (p.a.ResourceType == p.p.PropertyType) ? p.p.GetValue(options) ?? Activator.CreateInstance(p.a.ResourceType) : Activator.CreateInstance(p.a.ResourceType) })
-                    .ToArray();
+                    .Select(p => new { PropertyInfo = p, DisplayAttribute = p.GetCustomAttribute<DisplayAttribute>() })
+                    .Where(p => p.DisplayAttribute.ResourceType != null)
+                    .Select(p => new {
+                        p.DisplayAttribute,
+                        p.PropertyInfo,
+                        h = (p.DisplayAttribute.ResourceType == p.PropertyInfo.PropertyType || 
+                            (p.DisplayAttribute.ResourceType.IsGenericTypeDefinition && p.DisplayAttribute.ResourceType ==  p.PropertyInfo.PropertyType.GetGenericTypeDefinition())) 
+                                ? p.PropertyInfo.GetValue(options)  
+                                    ?? Activator.CreateInstance(p.DisplayAttribute.ResourceType.IsGenericTypeDefinition 
+                                        ? p.PropertyInfo.PropertyType 
+                                        : p.DisplayAttribute.ResourceType) 
+                                : Activator.CreateInstance(p.DisplayAttribute.ResourceType) })
+                    .OrderBy(p=>p.DisplayAttribute.GetOrder() ?? 10).ToArray();
 
                 foreach (var p in props)
                 {
-                    var att = p.a;
-                    var prop = p.p;
+                    var att = p.DisplayAttribute;
+                    var prop = p.PropertyInfo;
                     var handler = p.h;
                     // var att = prop.GetCustomAttribute<DisplayAttribute>();
                     //if (att?.ResourceType != null)

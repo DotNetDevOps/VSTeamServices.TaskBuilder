@@ -151,6 +151,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
         {
             return _propGetter.Compile().DynamicInvoke(new object[] { owner });
         }
+        public TProperty GetProperty(TOwner owner)
+        {
+            return (TProperty)GetProperty((object)owner);
+        }
         //public PropertyInfo GetPropertyInfo(TOwner owner)
         //{
         //    return _propGetter(owner);

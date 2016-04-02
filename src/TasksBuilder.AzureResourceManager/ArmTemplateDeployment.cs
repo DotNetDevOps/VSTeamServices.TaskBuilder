@@ -43,7 +43,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         }
 
 
-        [Display(ResourceType = typeof(SimpleArmTemplateDeployment<>))]
+        [Display(ResourceType = typeof(SimpleArmTemplateDeployment<>), Order = 0)]        
         public SimpleArmTemplateDeployment<T> ArmDeployment { get; set; }
 
         [Display(ResourceType = typeof(Tags),
@@ -105,6 +105,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         public JObject Output { get; set; }
         public JObject Parameters { get; set; }
         public JObject Variables { get;  set; }
+        public JObject Template { get; set; }
+
         public ResourceGroupOptions ResourceGroupOptions { get; set; }
         public JObject OutVariables { get; private set; }
 
@@ -289,17 +291,23 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             throw new ArgumentException($"{type} not known");
 
         }
-
+        public List<Action<JObject>> AfterLoad = new List<Action<JObject>>();
+         
         public virtual void Execute(T options)
         {
 
-            var template = LoadTemplate(options);
+            Template= LoadTemplate(options);
 
             foreach(var variable in Variables.Properties())
             {
                 if(variable.Value != null&&variable.Value.Type != JTokenType.Null)
-                    template.SelectToken($"variables.{variable.Name}").Replace(variable.Value);
+                    Template.SelectToken($"variables.{variable.Name}").Replace(variable.Value);
             }
+            foreach(var action in AfterLoad)
+            {
+                action(Template);
+            }
+
 
             if (ResourceGroupOptions.CreateTemplatesOnly)
             {
@@ -340,7 +348,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             },
             ResourceGroupOptions.ResourceGroup,
             ResourceGroupOptions.DeploymentName + (ResourceGroupOptions.AppendTimeStamp? "-"+ DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss"):""),
-            template, Parameters).GetAwaiter().GetResult();
+            Template, Parameters).GetAwaiter().GetResult();
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
 
