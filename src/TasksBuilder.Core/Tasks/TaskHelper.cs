@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
@@ -89,8 +90,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, PropertyInfo parent)
         {
 
-
-            var instance = Activator.CreateInstance(programOptionsType);
+       
+            
             var properties = programOptionsType.GetProperties(
                 BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance).Where(p =>
                     Attribute.IsDefined(p, typeof(BaseOptionAttribute)) || Attribute.IsDefined(p, typeof(DisplayAttribute)))
@@ -151,8 +152,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
-                    var fac = (property.GetValue(instance) as ITaskInputFactory) ?? (ITaskInputFactory)Activator.CreateInstance(resourceType);
-                    var tasks = fac.GenerateTasks(groupName, defaultTask, property,instance);
+                    ITaskInputFactory fac= null;
+                    if (resourceType == property.PropertyType)
+                    {
+                        fac = property.GetValue(Activator.CreateInstance(programOptionsType)) as ITaskInputFactory;
+                    }
+
+                    if(fac==null)
+                    {
+                        fac = Activator.CreateInstance(resourceType) as ITaskInputFactory;
+                    }
+                    var tasks = fac.GenerateTasks(groupName, defaultTask, property);
                     foreach (var iput in tasks.Inputs)
                         iput.GroupName = iput.GroupName ?? defaultTask.GroupName;
                     results.Add(tasks);

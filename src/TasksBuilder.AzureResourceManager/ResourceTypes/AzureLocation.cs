@@ -13,7 +13,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
     {
        
 
-        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent,object instance)
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
         {
             defaultTask.Type = "pickList";
             defaultTask.Properties.EditableOptions = "True";

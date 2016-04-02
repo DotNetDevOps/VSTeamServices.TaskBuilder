@@ -166,11 +166,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
         }
            
-        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent,object instance)
+        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
         {
             
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
-            var template = LoadTemplate(instance as T);
+            var template = LoadTemplate(default(T));
             var inputs = template.SelectToken("parameters").OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;
