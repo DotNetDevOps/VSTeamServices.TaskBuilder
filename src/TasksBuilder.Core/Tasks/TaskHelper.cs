@@ -90,8 +90,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         {
 
 
-
-            var properties = programOptionsType.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly).Where(p =>
+            var instance = Activator.CreateInstance(programOptionsType);
+            var properties = programOptionsType.GetProperties(
+                BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance).Where(p =>
                     Attribute.IsDefined(p, typeof(BaseOptionAttribute)) || Attribute.IsDefined(p, typeof(DisplayAttribute)))
                     .ToArray();
 
@@ -150,8 +151,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
-                    var fac = (Activator.CreateInstance(resourceType) as ITaskInputFactory);
-                    var tasks = fac.GenerateTasks(groupName, defaultTask, property);
+                    var fac = (property.GetValue(instance) as ITaskInputFactory) ?? (ITaskInputFactory)Activator.CreateInstance(resourceType);
+                    var tasks = fac.GenerateTasks(groupName, defaultTask, property,instance);
                     foreach (var iput in tasks.Inputs)
                         iput.GroupName = iput.GroupName ?? defaultTask.GroupName;
                     results.Add(tasks);

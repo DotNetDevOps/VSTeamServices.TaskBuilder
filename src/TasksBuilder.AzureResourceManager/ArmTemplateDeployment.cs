@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,7 +20,39 @@ using SInnovations.VSTeamServices.TasksBuilder.Tasks;
 
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 {
+    public class ArmTemplateDeployment : ArmTemplateDeployment<ArmTemplateOptions, ResourceSource>
+    {
+        public ArmTemplateDeployment() : base(o => o.Source)
+        {
 
+        }
+    }
+
+    public class ArmTemplateOptions
+    {
+        public ResourceSource Source { get; set; }
+        public ArmTemplateOptions(string path, Assembly assembly)
+        {
+            Tags = new Dictionary<string, string>();
+            ArmDeployment = new ArmTemplateDeployment();
+
+            Source = new ResourceSource(path, assembly)
+            {
+                 new ResourceTags(Tags)
+            };
+        }
+
+
+        [Display(ResourceType = typeof(ArmTemplateDeployment))]
+        public ArmTemplateDeployment ArmDeployment { get; set; }
+
+        [Display(ResourceType = typeof(Tags),
+         Description = "Tags, seperate tags with comma and key:value with semicolon.",
+         Name = "Resource Tags",
+         ShortName = "ResourceTags")]
+        public Dictionary<string, string> Tags { get; set; }
+
+    }
     public class ResourceTags : ITemplateAction
     {
         public IDictionary<string, string> Tags { get; set; }
@@ -133,11 +166,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
         }
            
-        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
+        public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent,object instance)
         {
             
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
-            var template = LoadTemplate(null);
+            var template = LoadTemplate(instance as T);
             var inputs = template.SelectToken("parameters").OfType<JProperty>().Select(t =>
             {
                 var obj = t.Value as JObject;
@@ -246,6 +279,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 case "bool":
                     return "boolean";
                 case "int":
+                case "securestring": //Would be cool with this type in vsts also
                     return "string";
                 case "string":
                 case "pickList":

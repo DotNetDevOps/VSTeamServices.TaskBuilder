@@ -35,7 +35,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
       
 
 
-        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
+        public TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent, object instance)
         {
             var tasks = TaskHelper.GetTaskInputs(typeof(T), parent);
            
