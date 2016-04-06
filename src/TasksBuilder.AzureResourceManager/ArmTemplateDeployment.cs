@@ -316,14 +316,21 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             }
 
             Console.WriteLine("Deploying Resource Group: ");
+
+            Console.WriteLine("\tTemplate:");
+            Console.WriteLine("\t\t" + Template.ToString(Formatting.Indented).Replace("\n", "\n\t\t").TrimEnd('\t'));
+
             Console.WriteLine("\tParameters:");
-            Console.WriteLine(Parameters.ToString(Formatting.Indented));
+            Console.WriteLine("\t\t"+Parameters.ToString(Formatting.Indented).Replace("\n","\n\t\t").TrimEnd('\t'));
+
+
+
             var endpoint = EndpointProvider(options);
             var managemenetToken = endpoint.GetToken("https://management.azure.com/");
 
             if (ResourceGroupOptions.CreateResourceGroup)
             {
-                Console.WriteLine("Creating or Updating Resource Group");
+                Console.WriteLine($"Creating or Updating Resource Group: {ResourceGroupOptions.ResourceGroup}, {ResourceGroupOptions.ResourceGroupLocation}");
                 var rg = ResourceManagerHelper.CreateResourceGroupIfNotExistAsync(
                     endpoint.SubscriptionId, managemenetToken,
                     ResourceGroupOptions.ResourceGroup,
@@ -334,8 +341,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     rg = ResourceManagerHelper.UpdateResourceGroupAsync(endpoint.SubscriptionId, managemenetToken, rg)
                         .GetAwaiter().GetResult();
                 }
-
-                Console.WriteLine($"{rg.Name} : {string.Join(" ", rg.Tags.Select(k => $"[{k.Key}:{k.Value}]"))}");
+                Console.WriteLine("\tResourceGroup Tags:");
+                Console.WriteLine($"{string.Join(" ", rg.Tags.Select(k => $"\t\t[{k.Key}:{k.Value}]\n"))}");
 
 
             }
@@ -351,8 +358,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             Template, Parameters).GetAwaiter().GetResult();
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
+            Console.WriteLine("\tOutput:");
+            Console.WriteLine("\t\t" + Output.ToString(Formatting.Indented).Replace("\n", "\n\t\t").TrimEnd('\t'));
 
-            foreach(var prop in OutVariables)
+            foreach (var prop in OutVariables)
             {
                 
                 var value = Output.SelectToken($"{prop.Key}.value");
