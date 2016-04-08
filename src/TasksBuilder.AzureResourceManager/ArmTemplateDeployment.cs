@@ -26,6 +26,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         {
 
         }
+
+        public override JObject LoadTemplate(T options)
+        {
+            options.OnTemplateLoaded();
+
+            return base.LoadTemplate(options);
+        }
     }
 
     public class ArmTemplateOptions<T> where T :ArmTemplateOptions<T>, new()
@@ -42,6 +49,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             };
         }
 
+        public virtual void OnTemplateLoaded()
+        {
+
+        }
 
         [Display(ResourceType = typeof(SimpleArmTemplateDeployment<>), Order = 0)]        
         public SimpleArmTemplateDeployment<T> ArmDeployment { get; set; }
@@ -149,7 +160,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 Console.WriteLine($"Failed to read variablesObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
                 return;
             }
-            Variables = JObject.FromObject(variablesObj);
+            Variables = JObject.FromObject(variablesObj,JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
 
             var outprefix = "out";
             var outputVariablesObj = ParamterTypeGenerator.CreateFromOutputs(template.SelectToken("outputs") as JObject ?? new JObject(), outprefix);
