@@ -206,16 +206,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             }
 
             switch (propertyType.ToString())
-            {
-                case "System.Nullable`1[System.Int]":
-                case "System.Int":
+            {  
                 case "System.String":
                     return "string";
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":
                     return "boolean";
-                   
 
+                case "System.Nullable`1[System.Int]":
+                case "System.Int":
+                case "System.Int32":
+                    return "string";
             };
 
             var type = propertyType.GetCustomAttribute<ResourceTypeAttribute>()?.TaskInputType;

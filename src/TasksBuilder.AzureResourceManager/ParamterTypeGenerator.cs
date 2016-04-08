@@ -123,6 +123,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 return typeof(string);
             if (token.Type == JTokenType.Boolean)
                 return typeof(bool);
+            if (token.Type == JTokenType.Integer)
+                return typeof(int);
 
 
             var parameterObj = token as JObject;
