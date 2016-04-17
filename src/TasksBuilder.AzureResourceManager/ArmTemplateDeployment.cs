@@ -347,6 +347,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                     ResourceGroupOptions.ResourceGroup,
                     ResourceGroupOptions.ResourceGroupLocation).GetAwaiter().GetResult();
 
+                if (rg.Tags == null)
+                    rg.Tags = new Dictionary<string,string>();
+
                 if (rg.Tags.MergeChangedReversed(ResourceGroupOptions.Tags))
                 {
                     rg = ResourceManagerHelper.UpdateResourceGroupAsync(endpoint.SubscriptionId, managemenetToken, rg)
