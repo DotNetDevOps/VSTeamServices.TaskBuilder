@@ -233,7 +233,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                     sb.Append($" --{prefix}Username {a} --{prefix}Password {b}");
                 }else
                 {
-                    writer.WriteLine($"$auth_{rng} = $serviceEndpoint_{rng}.Authorization | ConvertTo-Json - Compress");
+                    writer.WriteLine($"$auth_{rng} = $serviceEndpoint_{rng}.Authorization | ConvertTo-Json -Compress");
                     sb.Append($" --{serviceEndpoint.Name}Auth \"$auth_{rng}\"");
                 }
 
