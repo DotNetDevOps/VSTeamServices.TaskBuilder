@@ -564,7 +564,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
         public string Pattern { get; private set; }
 
 
-
+        public string Root { get; private set; }
         public IEnumerable<string> MatchedFiles()
         {
 
@@ -583,6 +583,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
                 Pattern = root + Pattern.Substring(firstDirBeforeWold);
             }
             var glob = new Glob(Pattern);
+            Root = root;
             return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories).Where(directory => glob.IsMatch(directory.Replace('\\','/')));
 
         }
