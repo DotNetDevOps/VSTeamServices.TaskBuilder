@@ -231,6 +231,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                     var a = WritePSVariable(writer, rng, "Username");
                     var b = WritePSVariable(writer, rng, "Password");
                     sb.Append($" --{prefix}Username {a} --{prefix}Password {b}");
+                }else
+                {
+                    writer.WriteLine($"$auth_{rng} = $serviceEndpoint_{rng}.Authorization | ConvertTo-Json - Compress");
+                    sb.Append($" --{serviceEndpoint.Name}Auth \"$auth_{rng}\"");
                 }
 
 
@@ -254,4 +258,6 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             return $"${a}_{rng}";
         }
     }
+
+    
 }
