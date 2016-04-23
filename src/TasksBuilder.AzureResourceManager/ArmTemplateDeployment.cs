@@ -373,7 +373,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
             Console.WriteLine("\tOutput:");
-            Console.WriteLine("\t\t" + Output.ToString(Formatting.Indented).Replace("\n", "\n\t\t").TrimEnd('\t'));
+            Console.WriteLine("\t\t" + Output?.ToString(Formatting.Indented).Replace("\n", "\n\t\t").TrimEnd('\t'));
 
             foreach (var prop in OutVariables)
             {
