@@ -66,15 +66,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
                     // {
 
 
-                    if (prop.PropertyType == att.ResourceType || att.ResourceType.IsSubclassOf(prop.PropertyType))
-                    {
-                        prop.SetValue(options, handler);
-                    }
-                    else
-                    {
-                        
-                        prop.SetValue(options, prop.GetValue(options) ??  Activator.CreateInstance(prop.PropertyType));
-                    }
+                    
 
                     if (handler is IConsoleReader)
                     {
@@ -86,6 +78,16 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
                     {
                         var consoleReader = handler as IConsoleReader<T>;
                         consoleReader.OnConsoleParsing(parser, args, options, prop);
+                    }
+
+                    if (prop.PropertyType == att.ResourceType || att.ResourceType.IsSubclassOf(prop.PropertyType))
+                    {
+                        prop.SetValue(options, handler);
+                    }
+                    else
+                    {
+
+                        prop.SetValue(options, prop.GetValue(options) ?? Activator.CreateInstance(prop.PropertyType));
                     }
 
                     //  }

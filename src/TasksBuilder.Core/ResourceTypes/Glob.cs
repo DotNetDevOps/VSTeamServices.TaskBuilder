@@ -598,6 +598,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
             {
                 Pattern = args[idx + 1];
             }
+
+            if(info.PropertyType == typeof(string))
+            {
+                info.SetValue(options, this.MatchedFiles().FirstOrDefault());
+            }
         }
     }
 }
