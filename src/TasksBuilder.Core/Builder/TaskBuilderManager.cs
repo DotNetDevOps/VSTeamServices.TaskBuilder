@@ -148,6 +148,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 
             switch (type)
             {
+                case "multiLine":
                 case "pickList":
                 case "boolean":
                 case "bool":
@@ -189,6 +190,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 var input = inputs[i];
                 switch (input.Type)
                 {
+                    case "multiLine":
                     case "filePath":
                     case "string":
                     case "pickList":

@@ -208,6 +208,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             switch (propertyType.ToString())
             {  
                 case "System.String":
+                    if (Attribute.IsDefined(propertyInfo, typeof(MultilineAttribute)))
+                        return "multiLine";
                     return "string";
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":
@@ -227,5 +229,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
 
             throw new NotImplementedException(propertyType.ToString());
         }
+    }
+
+    public class MultilineAttribute : Attribute
+    {
+
     }
 }
