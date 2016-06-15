@@ -38,7 +38,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
                 _result.Add(resourceUri, new Lazy<AuthenticationResult>(() =>
                 {
                     var cred = new ClientCredential(PrincipalId, PrincipalKey);
-                    var token = _ctx.Value.AcquireToken(resourceUri, cred);
+                    var token = _ctx.Value.AcquireTokenAsync(resourceUri, cred).GetAwaiter().GetResult();
                     return token;
                 }));
             }

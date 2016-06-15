@@ -88,6 +88,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
         public bool Updated { get; set; }
         public string SecretUriWithVersion { get; set; }
     }
+   
     public class KeyVaultOutput<T> : KeyVaultOutput, IConsoleReader<T>, IConsoleExecutor<T> where T : class, new()
     {
         private Lazy<KeyVaultClient> _vaultClient;
@@ -137,6 +138,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
                 await KeyVaultClient.SetSecretAsync(vaultUri, Options.SecretName, value, tags, contentType, new SecretAttributes { NotBefore = notbefore, Enabled = enabled, Expires = expires });
             }
         }
+
+     
         public async Task<SaveCertificateResult> SaveCertificateAsync(Func<byte[]> certGenerator, string password, Dictionary<string, string> tags = null, TimeSpan? saveIfCurrentExpiresWithin = null)
         {
 
