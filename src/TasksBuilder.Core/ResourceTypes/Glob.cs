@@ -567,6 +567,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
         public string Root { get; private set; }
         public IEnumerable<string> MatchedFiles()
         {
+            if (string.IsNullOrEmpty(Pattern))
+            {
+                return new string[] { };
+            }
 
             if (!Pattern.Contains("*"))
             {
