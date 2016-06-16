@@ -84,10 +84,17 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
                     {
                         prop.SetValue(options, handler);
                     }
-                    else
+                    else if( !prop.PropertyType.IsPrimitive)
                     {
-
-                        prop.SetValue(options, prop.GetValue(options) ?? Activator.CreateInstance(prop.PropertyType));
+                        try
+                        {
+                            prop.SetValue(options, prop.GetValue(options) ?? Activator.CreateInstance(prop.PropertyType));
+                        }
+                        catch (MissingMethodException ctor)
+                        {
+                            Console.WriteLine("Warning: " + ctor.ToString());
+                            Console.WriteLine(prop.PropertyType.FullName.ToString());
+                        }
                     }
 
                     //  }
