@@ -368,8 +368,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
                 TenantId = endpoint.TenantId,
             },
             ResourceGroupOptions.ResourceGroup,
-            ResourceGroupOptions.DeploymentName + (ResourceGroupOptions.AppendTimeStamp? "-"+ DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss"):""),
-            Template, Parameters).GetAwaiter().GetResult();
+            ResourceGroupOptions.DeploymentName,
+            Template, Parameters, appendTimestamp:ResourceGroupOptions.AppendTimeStamp).GetAwaiter().GetResult();
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
             Console.WriteLine("\tOutput:");
