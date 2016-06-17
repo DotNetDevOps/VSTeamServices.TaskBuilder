@@ -63,7 +63,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="S-Innovations.Azure.ResourceManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\S-Innovations.Azure.ResourceManager.2.0.0-pre-2016061510\lib\net46\S-Innovations.Azure.ResourceManager.dll</HintPath>
+      <HintPath>..\..\packages\S-Innovations.Azure.ResourceManager.2.0.0-pre-2016061702\lib\net46\S-Innovations.Azure.ResourceManager.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
