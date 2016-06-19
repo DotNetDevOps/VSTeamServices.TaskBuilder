@@ -170,7 +170,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             writer.WriteLine("(");
             foreach (var input in inputs)
             {
-                writer.WriteLine($"\t[{PSType(input.Type)}] [Parameter(Mandatory = {(input.Required ? "$true" : "$false")})]");
+                writer.WriteLine($"\t[{PSType(input.Type)}] [Parameter(Mandatory = {(input.Required && string.IsNullOrEmpty(input.VisibleRule) ? "$true" : "$false")})]");
                 writer.WriteLine($"\t${input.Name}{(input == inputs.Last() ? "" : ",")}");
 
             }

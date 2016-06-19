@@ -596,8 +596,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
 
         public void OnConsoleParsing(Parser parser, string[] args, object options, PropertyInfo info)
         {
-            var att = info.GetCustomAttribute<DisplayAttribute>();
-            var idx = Array.IndexOf(args, $"--{att.ShortName}");
+           
+            var idx = Array.IndexOf(args, $"--{info.GetCustomAttribute<OptionAttribute>()?.LongName?? info.GetCustomAttribute<DisplayAttribute>()?.ShortName}");
             if (idx != -1)
             {
                 Pattern = args[idx + 1];
