@@ -86,5 +86,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         [Display(GroupName = "TemplateDeploymentOptions", Description = "TemplateParameterOutputPath", Name = "TemplateParameterOutputPath")]
         public string TemplateParameterOutputPath { get; set; }
 
+
+        [VisibleRule("CreateTemplatesOnly = false")]
+        [Option("WaitForDeploymentCompletion", DefaultValue = true)]
+        [Display(GroupName = "TemplateDeploymentOptions", Description = "Wait for the ARM deployment to complate before continuing", Name = "Wait for deployment")]
+        public bool WaitForDeploymentCompletion { get; set; }
+
     }
 }

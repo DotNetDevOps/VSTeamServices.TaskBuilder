@@ -21,6 +21,16 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             Console.WriteLine($"##vso[task.setvariable variable={variableName};]{value}");
         }
 
+        public static void SetVariable(string variableName, string value, bool isSecret)
+        {
+            if (isSecret)
+            {
+                Console.WriteLine($"##vso[task.setvariable variable={variableName};issecret=true;]{value}");
+            }else
+            {
+                SetVariable(variableName, value);
+            }
+        }
         /// <summary>
         /// Get a task name from either  <see cref="DisplayAttribute"/> ShortName or <see cref="BaseOptionAttribute"/> 
         /// long name in this specific order with fallback to the clr property name;

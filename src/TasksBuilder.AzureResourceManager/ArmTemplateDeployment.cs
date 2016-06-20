@@ -361,15 +361,18 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             }
 
-            var result = ResourceManagerHelper.CreateTemplateDeploymentAsync(new ApplicationCredentials
-            {
-                AccessToken = managemenetToken,
-                SubscriptionId = endpoint.SubscriptionId,
-                TenantId = endpoint.TenantId,
-            },
-            ResourceGroupOptions.ResourceGroup,
-            ResourceGroupOptions.DeploymentName,
-            Template, Parameters, appendTimestamp:ResourceGroupOptions.AppendTimeStamp).GetAwaiter().GetResult();
+            var result = ResourceManagerHelper.CreateTemplateDeploymentAsync(
+                new ApplicationCredentials
+                    {
+                        AccessToken = managemenetToken,
+                        SubscriptionId = endpoint.SubscriptionId,
+                        TenantId = endpoint.TenantId,
+                    },
+                ResourceGroupOptions.ResourceGroup,
+                ResourceGroupOptions.DeploymentName,
+                Template, Parameters, appendTimestamp:ResourceGroupOptions.AppendTimeStamp, waitForDeployment: ResourceGroupOptions.WaitForDeploymentCompletion)
+            .GetAwaiter().GetResult();
+
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
             Console.WriteLine("\tOutput:");
