@@ -375,15 +375,19 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
 
             Console.WriteLine($"Deployment Status: {result.Properties.ProvisioningState}");
             Output = result.Properties.Outputs as JObject;
-            Console.WriteLine("\tOutput:");
-            Console.WriteLine("\t\t" + Output?.ToString(Formatting.Indented).Replace("\n", "\n\t\t").TrimEnd('\t'));
-
-            foreach (var prop in OutVariables)
+            if (Output != null)
             {
-                
-                var value = Output.SelectToken($"{prop.Key}.value");
-                if (value != null)
-                    TaskHelper.SetVariable(prop.Value.ToString(), JsonConvert.SerializeObject(value));
+                Console.WriteLine("\tOutput:");
+                Console.WriteLine("\t\t" + Output?.ToString(Formatting.Indented).Replace("\n", "\n\t\t").TrimEnd('\t'));
+
+                foreach (var prop in OutVariables)
+                {
+
+                    var value = Output.SelectToken($"{prop.Key}.value");
+                    if (value != null)
+                        TaskHelper.SetVariable(prop.Value.ToString(), JsonConvert.SerializeObject(value));
+                }
+
             }
 
 
