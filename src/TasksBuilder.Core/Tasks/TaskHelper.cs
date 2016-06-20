@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -46,8 +47,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         }
         public static JToken GetTaskDefaultValue(PropertyInfo property)
         {
-            var i = property.GetCustomAttribute<BaseOptionAttribute>();
-            object defaultValue = i?.DefaultValue ?? "";
+          
+            object defaultValue = property.GetCustomAttribute<BaseOptionAttribute>()?.DefaultValue ??
+                (property.GetCustomAttribute<DefaultValueAttribute>()?.Value) ?? "";
             if (property.PropertyType == typeof(bool))
             {
                 defaultValue = (defaultValue.GetType() == typeof(bool) && (bool)defaultValue) ? "true" : "false";

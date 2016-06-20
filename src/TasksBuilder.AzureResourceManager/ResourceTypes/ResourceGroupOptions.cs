@@ -2,6 +2,7 @@
 namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using Attributes;
     using CommandLine;
@@ -55,12 +56,15 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         [Display(GroupName = "TemplateDeploymentOptions", Description = "The deployment name for the ARM deployment, if not provied a hash of input parameter names is used.", Name = "Deployment Name")]
         public string DeploymentName { get; set; }
 
+
+        [DefaultValue(true)]
         [VisibleRule("CreateTemplatesOnly = false")]
         [Option("AppendTimeStamp")]
         [Required]
         [Display(GroupName = "TemplateDeploymentOptions", Description = "Append a timespam to the deployment name", Name = "Append Timestamp")]
         public bool AppendTimeStamp { get; set; }
 
+        [DefaultValue(true)]
         [VisibleRule("CreateTemplatesOnly = false")]
         [Option("CreateResourceGroup")]
         [Required]
@@ -87,6 +91,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         public string TemplateParameterOutputPath { get; set; }
 
 
+        [DefaultValue(true)]
         [VisibleRule("CreateTemplatesOnly = false")]
         [Option("WaitForDeploymentCompletion")]
         [Display(GroupName = "TemplateDeploymentOptions", Description = "Wait for the ARM deployment to complate before continuing", Name = "Wait for deployment")]
