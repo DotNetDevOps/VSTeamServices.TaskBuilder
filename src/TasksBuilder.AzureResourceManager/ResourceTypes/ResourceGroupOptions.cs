@@ -56,13 +56,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
         public string DeploymentName { get; set; }
 
         [VisibleRule("CreateTemplatesOnly = false")]
-        [Option("AppendTimeStamp", DefaultValue = true)]
+        [Option("AppendTimeStamp")]
         [Required]
         [Display(GroupName = "TemplateDeploymentOptions", Description = "Append a timespam to the deployment name", Name = "Append Timestamp")]
         public bool AppendTimeStamp { get; set; }
 
         [VisibleRule("CreateTemplatesOnly = false")]
-        [Option("CreateResourceGroup", DefaultValue = true)]
+        [Option("CreateResourceGroup")]
         [Required]
         [Display(GroupName = "TemplateDeploymentOptions", Description = "Create the resource group if it do not exists", Name = "Create Resource Group")]
         public bool CreateResourceGroup { get; set; }
@@ -88,7 +88,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
 
 
         [VisibleRule("CreateTemplatesOnly = false")]
-        [Option("WaitForDeploymentCompletion", DefaultValue = true)]
+        [Option("WaitForDeploymentCompletion")]
         [Display(GroupName = "TemplateDeploymentOptions", Description = "Wait for the ARM deployment to complate before continuing", Name = "Wait for deployment")]
         public bool WaitForDeploymentCompletion { get; set; }
 
