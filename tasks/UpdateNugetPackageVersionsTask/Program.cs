@@ -14,14 +14,7 @@ using CommandLine;
 using SInnovations.VSTeamServices.TasksBuilder.Attributes;
 using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
 
-[assembly: AssemblyInformationalVersion("1.0.21")]
-[assembly: AssemblyTitle("Update Nuget Packages Versions")]
-[assembly: AssemblyDescription("After building nuget packages that references eachother, the versions can be updated to match the references nuget packages.")]
-[assembly: AssemblyCompany("S-Innovations /v Poul Kjeldager Sørensen")]
-[assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
-[assembly: AssemblyConfiguration("Package")]
-[assembly: AssemblyCulture("")]
+
 
 namespace UpdateNugetPackageVersionsTask
 {
