@@ -94,12 +94,17 @@ namespace UpdateNugetPackageVersionsTask
                             version.Value += "-" + appendversion;
 
                         var dependencies = metadata.Elements().First(e => e.Name.LocalName == "dependencies");
-                        Console.WriteLine((string.Join("\n", dependencies.Elements().Select(e =>
+
+
+                        Console.WriteLine((string.Join("\n", dependencies.Descendants(ns + "dependency").Select(e =>
                           string.Format("{0}.{1}.nupkg", e.Attribute("id").Value, e.Attribute("version").Value)))));
-                        foreach (var dependency in dependencies.Elements().Where(e => IncludedInBuild(e, othernugets)))
+
+
+                        foreach (var dependency in dependencies.Descendants(ns + "dependency").Where(e => IncludedInBuild(e, othernugets)))
                         {
                             var dependencyElement = othernugets.FirstOrDefault(s => s.StartsWith(dependency.Attribute("id").Value) &&
-                    Char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
+                    char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
+
                             var otherversion = Path.GetFileNameWithoutExtension(dependencyElement.Substring(dependency.Attribute("id").Value.Length)).Trim('.');
                             var attr = dependency.Attribute("version");
 
