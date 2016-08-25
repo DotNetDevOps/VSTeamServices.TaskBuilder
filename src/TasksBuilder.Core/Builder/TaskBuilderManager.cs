@@ -212,7 +212,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             foreach (var serviceEndpoint in inputs.Where(i => i.Type.StartsWith("connectedService:")))
             {
                 var rng = Path.GetRandomFileName().Substring(0, 5);
-                writer.WriteLine($"$serviceEndpoint_{rng} = Get-ServiceEndpoint -Name \"${serviceEndpoint.Name}\" -Context $distributedTaskContext");
+                writer.WriteLine($"$serviceEndpoint_{rng} = Get-VstsEndpoint -Name \"${serviceEndpoint.Name}\" -Required");
 
                 if (serviceEndpoint.Type == "connectedService:AzureRM")
                 {
@@ -235,7 +235,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                     sb.Append($" --{prefix}Username {a} --{prefix}Password {b}");
                 }else
                 {
-                    writer.WriteLine($"$auth_{rng} = ($serviceEndpoint_{rng}.Authorization | ConvertTo-Json -Compress) -replace \"\"\"\",\"'\"");
+                    writer.WriteLine($"$auth_{rng} = ($serviceEndpoint_{rng}.Auth | ConvertTo-Json -Compress) -replace \"\"\"\",\"'\"");
                     sb.Append($" --{serviceEndpoint.Name}Auth \"$auth_{rng}\"");
                 }
 
@@ -256,7 +256,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 
         private static string WritePSVariable(StreamWriter writer, string rng, string a)
         {
-            writer.WriteLine($"${a}_{rng} = $serviceEndpoint_{rng}.Authorization.Parameters.{a}");
+            writer.WriteLine($"${a}_{rng} = $serviceEndpoint_{rng}.Auth.Parameters.{a}");
             return $"${a}_{rng}";
         }
     }
