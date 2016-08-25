@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -91,7 +92,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 
             json.Execution = new TaskExecution
             {
-                ExecutionType = "PowerShell",
+                ExecutionType = "PowerShell3",
                 Target = "$(currentDirectory)\\OauthBroker.ps1",
                 WorkingDirectory = "$(currentDirectory)",
             };
@@ -113,6 +114,12 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 WriteOauthBrokerPowershell(writer, Path.GetFileName(pathToDll), json.Inputs);
                 writer.Flush();
             }
+
+            using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("SInnovations.VSTeamServices.TasksBuilder.ps_modules.zip"), ZipArchiveMode.Read))
+            {
+                zip.ExtractToDirectory(outputDir);
+            }
+
             File.WriteAllText(Path.Combine(outputDir, "task.json"), obj.ToString(Newtonsoft.Json.Formatting.Indented));
             return obj;
 
@@ -165,21 +172,33 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
 
         private static void WriteOauthBrokerPowershell(StreamWriter writer, string program, TaskInput[] inputs)
         {
-            writer.WriteLine($"[CmdletBinding(DefaultParameterSetName = 'None')]");
-            writer.WriteLine("param");
-            writer.WriteLine("(");
+            //writer.WriteLine($"[CmdletBinding(DefaultParameterSetName = 'None')]");
+            //writer.WriteLine("param");
+            //writer.WriteLine("(");
+            //foreach (var input in inputs)
+            //{
+            //    writer.WriteLine($"\t[{PSType(input.Type)}] [Parameter(Mandatory = {(input.Required && string.IsNullOrEmpty(input.VisibleRule) ? "$true" : "$false")})]");
+            //    writer.WriteLine($"\t${input.Name}{(input == inputs.Last() ? "" : ",")}");
+
+            //}
+            //writer.WriteLine(")");
+
+            writer.WriteLine("[CmdletBinding()]");
+            writer.WriteLine("param()");
+            writer.WriteLine("Trace-VstsEnteringInvocation $MyInvocation");
+
+            writer.WriteLine("Try\n{ ");
+
             foreach (var input in inputs)
             {
-                writer.WriteLine($"\t[{PSType(input.Type)}] [Parameter(Mandatory = {(input.Required && string.IsNullOrEmpty(input.VisibleRule) ? "$true" : "$false")})]");
-                writer.WriteLine($"\t${input.Name}{(input == inputs.Last() ? "" : ",")}");
-
+                writer.WriteLine($"[{(input.Type == "boolean" ?"bool":"string")}]${input.Name} = Get-VstsInput -Name {input.Name} {(input.Required && string.IsNullOrEmpty(input.VisibleRule)? "-Require ":"")}{(input.Type == "boolean"? "-AsBool ":"")}");
             }
-            writer.WriteLine(")");
+          
 
-            foreach (var input in inputs.Where(t => t.Type == "boolean"))
-            {
-                writer.WriteLine($"[bool]${input.Name} = ${input.Name}  -eq 'true'");
-            }
+          //  foreach (var input in inputs.Where(t => t.Type == "boolean"))
+           // {
+          //      writer.WriteLine($"[bool]${input.Name} = ${input.Name}  -eq 'true'");
+           // }
             //  writer.WriteLine(@"$adal = ""${env: ProgramFiles(x86)}\Microsoft SDKs\Azure\PowerShell\ServiceManagement\Azure\Services\Microsoft.IdentityModel.Clients.ActiveDirectory.dll""");
             //   writer.WriteLine("[System.Reflection.Assembly]::LoadFrom($adal)");
 
@@ -212,7 +231,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             foreach (var serviceEndpoint in inputs.Where(i => i.Type.StartsWith("connectedService:")))
             {
                 var rng = Path.GetRandomFileName().Substring(0, 5);
-                writer.WriteLine($"$serviceEndpoint_{rng} = Get-VstsEndpoint -Name \"${serviceEndpoint.Name}\" -Required");
+                writer.WriteLine($"$serviceEndpoint_{rng} = Get-VstsEndpoint -Name \"${serviceEndpoint.Name}\" -Require");
 
                 if (serviceEndpoint.Type == "connectedService:AzureRM")
                 {
@@ -251,6 +270,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             writer.WriteLine($" {string.Join(" ", Enumerable.Range(0, inputs.Length).Select(i => $"$arg{i}"))}");
 
 
+            writer.WriteLine("}");
+            writer.WriteLine("finally\n{");
+            writer.WriteLine(" Trace-VstsLeavingInvocation $MyInvocation");
+            writer.WriteLine("}");
+   
 
         }
 
