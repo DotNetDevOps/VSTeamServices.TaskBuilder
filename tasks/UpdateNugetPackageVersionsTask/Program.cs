@@ -67,7 +67,7 @@ namespace UpdateNugetPackageVersionsTask
 
                     XDocument doc;
                  //   XNamespace ns = "http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd";
-                    XNamespace nscore = "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd";
+                  //  XNamespace nscore = "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd";
                     var entry = zip.Entries.FirstOrDefault(f => f.Name.EndsWith(".nuspec"));
                     if (entry == null)
                         Console.WriteLine("ENTRY WAS NULL");
@@ -90,11 +90,11 @@ namespace UpdateNugetPackageVersionsTask
                         var dependencies = metadata.Elements().First(e => e.Name.LocalName == "dependencies");
 
 
-                        Console.WriteLine((string.Join("\n", dependencies.Descendants(nscore + "dependency").Select(e =>
+                        Console.WriteLine((string.Join("\n", dependencies.Descendants().Where(n=>n.Name.LocalName =="dependency").Select(e =>
                           string.Format("{0}.{1}.nupkg", e.Attribute("id").Value, e.Attribute("version").Value)))));
 
 
-                        foreach (var dependency in dependencies.Descendants(nscore + "dependency").Where(e => IncludedInBuild(e, othernugets)))
+                        foreach (var dependency in dependencies.Descendants().Where(n => n.Name.LocalName == "dependency").Where(e => IncludedInBuild(e, othernugets)))
                         {
                             var dependencyElement = othernugets.FirstOrDefault(s => s.StartsWith(dependency.Attribute("id").Value) &&
                     char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
