@@ -114,10 +114,13 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
                 WriteOauthBrokerPowershell(writer, Path.GetFileName(pathToDll), json.Inputs);
                 writer.Flush();
             }
-
-            using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("SInnovations.VSTeamServices.TasksBuilder.ps_modules.zip"), ZipArchiveMode.Read))
+            if (!Directory.Exists(Path.Combine(outputDir, "ps_modules")))
             {
-                zip.ExtractToDirectory(outputDir);
+                using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("SInnovations.VSTeamServices.TasksBuilder.ps_modules.zip"), ZipArchiveMode.Read))
+                {
+                    zip.ExtractToDirectory(outputDir);
+
+                }
             }
 
             File.WriteAllText(Path.Combine(outputDir, "task.json"), obj.ToString(Newtonsoft.Json.Formatting.Indented));
