@@ -115,7 +115,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             var results = new TaskGeneratorResult();
             foreach (var property in properties)
             {
-
+                
 
                 var groupName = GetGroupName(property);
                 var resourceType = GetResourcetype(property);
@@ -149,7 +149,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
                             results.SourceDefinitions.Add(new SourceDefinition
                             {
                                 Endpoint = sd.Endpoint,
-                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
+                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? 
+                                    parent?.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService ?? 
+                                    programOptionsType.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
                                 Selector = sd.Selector,
                                 KeySelector = sd.KeySelector ?? "",
                                 Target = variableName
