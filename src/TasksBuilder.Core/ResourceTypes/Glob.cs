@@ -592,6 +592,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
              //   for (var i = 0; i < chain.Length; i++)
                 {
                     var step = chain[i];
+
+                   
+                    
+
                     foreach (var file in EnumeratePattern(root, step))
                     {
                         var newRoot = Path.GetDirectoryName(file);
@@ -602,8 +606,11 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
                         }
 
                         var newPattern = string.Join("/..", chain.Skip(i));
+                        Pattern = (newRoot + newPattern);
+                        SetRoot();
 
-                        foreach (var nestedfile in EnumeratePattern(newRoot, (newRoot+ newPattern)))
+
+                        foreach (var nestedfile in EnumeratePattern(Root, Pattern))
                             yield return nestedfile;
 
                     }
