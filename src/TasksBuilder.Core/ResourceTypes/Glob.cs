@@ -567,32 +567,78 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
         public string Root { get; private set; }
         public IEnumerable<string> MatchedFiles()
         {
+            Pattern = Pattern.Replace("\\", "/");
+
             if (string.IsNullOrEmpty(Pattern))
             {
-                return new string[] { };
+                yield break;
+                //  return new string[] { };
             }
 
             if (!Pattern.Contains("*"))
             {
-                return new string[] { Pattern };
+                // return new string[] { Pattern };
+                yield return Pattern;
+                yield break;
             }
 
+            SetRoot();
+
+            if (Pattern.Contains("/.."))
+            {
+                var chain = Pattern.Split(new[] { "/.." }, StringSplitOptions.None).ToArray();
+                var root = Root;
+                var i = 0;
+             //   for (var i = 0; i < chain.Length; i++)
+                {
+                    var step = chain[i];
+                    foreach (var file in EnumeratePattern(root, step))
+                    {
+                        var newRoot = Path.GetDirectoryName(file);
+                        while (i < chain.Length && chain[++i] == string.Empty)
+                        {
+                            newRoot = Path.GetDirectoryName(file);
+                         
+                        }
+
+                        var newPattern = string.Join("/..", chain.Skip(i));
+
+                        foreach (var nestedfile in EnumeratePattern(newRoot, (newRoot+ newPattern)))
+                            yield return nestedfile;
+
+                    }
+                }
+
+            }
+            else
+            {
+
+                foreach (var file in EnumeratePattern(Root, Pattern))
+                    yield return file;
+            }
+
+        }
+
+        private void SetRoot()
+        {
             var root = Directory.GetCurrentDirectory();
             if (Path.IsPathRooted(Pattern))
             {
-                
+
                 var firstWild = Pattern.IndexOf('*');
                 var firstDirBeforeWold = Pattern.Replace('\\', '/').LastIndexOf('/', firstWild);
                 root = new DirectoryInfo(Pattern.Substring(0, firstDirBeforeWold)).FullName;
                 Pattern = root + Pattern.Substring(firstDirBeforeWold);
             }
-            var glob = new Glob(Pattern);
             Root = root;
-            return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories).Where(directory => glob.IsMatch(directory.Replace('\\','/')));
-
         }
 
-
+        private static IEnumerable<string> EnumeratePattern(string root, string Pattern)
+        {
+            
+            var glob = new Glob(Pattern);
+            return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories).Where(directory => glob.IsMatch(directory.Replace('\\', '/')));
+        }
 
         public void OnConsoleParsing(Parser parser, string[] args, object options, PropertyInfo info)
         {
