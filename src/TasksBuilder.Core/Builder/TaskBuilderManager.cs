@@ -269,9 +269,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             writer.Write("& $CMD");
             writer.Write(sb.ToString());
 
+           
 
             writer.WriteLine($" {string.Join(" ", Enumerable.Range(0, inputs.Length).Select(i => $"$arg{i}"))}");
 
+            writer.WriteLine("if ($lastexitcode -ne 0)");
+            writer.WriteLine("{");
+            writer.WriteLine("\tthrow \"Task Failed\"");
+            writer.WriteLine("}");
 
             writer.WriteLine("}");
             writer.WriteLine("finally\n{");
