@@ -639,6 +639,10 @@ namespace SInnovations.VSTeamServices.TaskBuilder.ResourceTypes
 
         private static IEnumerable<string> EnumeratePattern(string root, string Pattern)
         {
+            if (!Directory.Exists(root))
+            {
+                return Enumerable.Empty<string>();
+            }
             
             var glob = new Glob(Pattern);
             return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories).Where(directory => glob.IsMatch(directory.Replace('\\', '/')));
