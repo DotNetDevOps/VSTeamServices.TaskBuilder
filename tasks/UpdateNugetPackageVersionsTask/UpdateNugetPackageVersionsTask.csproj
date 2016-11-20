@@ -57,12 +57,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\TasksBuilder.Core\TasksBuilder.csproj">
-      <Project>{274c966b-3f90-43c8-9f67-8eae1fcc8e2d}</Project>
-      <Name>TasksBuilder</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

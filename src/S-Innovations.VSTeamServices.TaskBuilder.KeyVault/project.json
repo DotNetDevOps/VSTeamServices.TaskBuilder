@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0-pre",
+
+  "dependencies": {
+    "S-Innovations.VSTeamServices.TaskBuilder": "1.0.0-pre",
+    "S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager": "1.0.0-pre",
+    "Microsoft.Azure.KeyVault": "2.0.4-preview"
+  },
+  "packOptions": {
+    "tags": [ "S-Innovations", "VSTS" ]
+  },
+  "buildOptions": {
+    "embed": [
+     "secret.json"
+    ]
+  },
+  "frameworks": {
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime": "",
+        "System.Security": "",
+        "System.Threading.Tasks": "",
+        "System.IO.Compression": "",
+        "System.IO.Compression.FileSystem": "",
+        "System.ComponentModel": "",
+        "System.ComponentModel.DataAnnotations": ""
+      }
+    }
+  }
+}

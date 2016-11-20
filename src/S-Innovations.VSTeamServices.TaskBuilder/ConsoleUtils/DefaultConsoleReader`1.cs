@@ -26,10 +26,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
 
         public virtual void OnConsoleParsing(Parser parser, string[] args, object options, PropertyInfo info)
         {
-            if (ConsoleHelper.ParseAndHandleArguments<T>(parser, args, Options))
-            {
-
-            }
+            Options = ConsoleHelper.RunParseAndHandleArguments<T>(parser, args);           
         }
 
       

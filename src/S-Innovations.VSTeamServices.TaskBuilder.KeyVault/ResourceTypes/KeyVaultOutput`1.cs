@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json.Linq;
 using SInnovations.Azure.ResourceManager;
 using SInnovations.Azure.ResourceManager.TemplateActions;
@@ -133,7 +134,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
             var vaultUri = $"https://{VaultName}.vault.azure.net";
             var secrets = await KeyVaultClient.GetSecretsAsync(vaultUri);
 
-            if (secrets.Value == null || !secrets.Value.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
+            if (!secrets.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
             {
                 await KeyVaultClient.SetSecretAsync(vaultUri, Options.SecretName, value, tags, contentType, new SecretAttributes { NotBefore = notbefore, Enabled = enabled, Expires = expires });
             }
@@ -166,14 +167,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
 
              };
 
-            if (saveIfCurrentExpiresWithin == null || secrets.Value == null || !secrets.Value.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
+            if (saveIfCurrentExpiresWithin == null || !secrets.Any(s => s.Id == vaultUri + "/secrets/" + SecretName))
             {
                 var value = await setTagsAndReturn();
                 return value;
             }
             else
             {
-                var last = secrets.Value.Single(s => s.Id == vaultUri + "/secrets/" + SecretName);
+                var last = secrets.Single(s => s.Id == vaultUri + "/secrets/" + SecretName);
                 if ((last.Attributes.Expires - DateTime.UtcNow) < saveIfCurrentExpiresWithin)
                 {
                     return await setTagsAndReturn();
@@ -239,7 +240,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
                         continue;
                     }
 
-                    var secretTemplate = new ResourceSource("SInnovations.VSTeamServices.TasksBuilder.KeyVault.secret.json", typeof(KeyVaultOutput<>).Assembly);
+                    var secretTemplate = new ResourceSource("S-Innovations.VSTeamServices.TasksBuilder.KeyVault.secret.json", typeof(KeyVaultOutput<>).Assembly);
 
                
 

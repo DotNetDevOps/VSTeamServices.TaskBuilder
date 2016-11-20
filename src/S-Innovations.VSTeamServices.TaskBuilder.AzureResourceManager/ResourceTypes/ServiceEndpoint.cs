@@ -53,8 +53,8 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
 
         public void OnConsoleParsing(Parser parser, string[] args, object options, PropertyInfo info)
         {
-            var serviceEndpoint = new ConnectedServiceEndpointOptions(this);
-            parser.ParseArguments(args, serviceEndpoint);
+              
+            parser.ParseArguments(()=> new ConnectedServiceEndpointOptions(this),args);
         }
     }
 }

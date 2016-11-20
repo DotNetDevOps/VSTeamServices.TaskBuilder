@@ -9,6 +9,10 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
 {
     public class ConnectedServiceEndpointOptions
     {
+        public ConnectedServiceEndpointOptions()
+        {
+
+        }
         public ConnectedServiceEndpointOptions(ServiceEndpoint endpoint)
         {
             ConnectedServiceName = endpoint;

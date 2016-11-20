@@ -40,7 +40,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         /// <returns></returns>
         public static string GetVariableName(MemberInfo property)
         {
-            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var i = property.GetCustomAttribute<OptionAttribute>();
             var d = property.GetCustomAttribute<DisplayAttribute>();
 
             return d?.ShortName ?? i?.LongName ?? property.Name;
@@ -48,7 +48,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         public static JToken GetTaskDefaultValue(PropertyInfo property)
         {
           
-            object defaultValue = property.GetCustomAttribute<BaseOptionAttribute>()?.DefaultValue ??
+            object defaultValue = property.GetCustomAttribute<BaseAttribute>()?.Default ??
                 (property.GetCustomAttribute<DefaultValueAttribute>()?.Value) ?? "";
             if (property.PropertyType == typeof(bool))
             {
@@ -65,14 +65,14 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         }
         public static string GetHelpmarkDown(PropertyInfo property)
         {
-            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var i = property.GetCustomAttribute<OptionAttribute>();
             var d = property.GetCustomAttribute<DisplayAttribute>();
 
             return d?.Description ?? i?.HelpText;
         }
         public static string GetLabel(PropertyInfo property)
         {
-            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var i = property.GetCustomAttribute<OptionAttribute>();
             var d = property.GetCustomAttribute<DisplayAttribute>();
 
             return d?.Name ?? i?.LongName;
@@ -85,9 +85,9 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
         }
         public static bool GetRequired(PropertyInfo property, PropertyInfo parent)
         {
-            var i = property.GetCustomAttribute<BaseOptionAttribute>();
+            var i = property.GetCustomAttribute<OptionAttribute>();
             var r = property.GetCustomAttribute<RequiredAttribute>();
-            var ip = property.GetCustomAttribute<BaseOptionAttribute>();
+            var ip = property.GetCustomAttribute<OptionAttribute>();
             var rp = property.GetCustomAttribute<RequiredAttribute>();
 
             var p = (rp == null ? ip?.Required ?? false : true);
@@ -106,7 +106,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
             
             var properties = programOptionsType.GetProperties(
                 BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance).Where(p =>
-                    Attribute.IsDefined(p, typeof(BaseOptionAttribute)) || Attribute.IsDefined(p, typeof(DisplayAttribute)))
+                    Attribute.IsDefined(p, typeof(OptionAttribute)) || Attribute.IsDefined(p, typeof(DisplayAttribute)))
                     .ToArray();
 
             //     var useServiceEndpoint = properties.Any(p => Attribute.IsDefined(p, typeof(ServiceEndpointAttribute)));

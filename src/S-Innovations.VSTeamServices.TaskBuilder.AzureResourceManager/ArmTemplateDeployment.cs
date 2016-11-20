@@ -133,44 +133,30 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
         }
         public void OnConsoleParsing(Parser parser, string[] args, T options, PropertyInfo info)
         {
-
-            if (!ConsoleHelper.ParseAndHandleArguments(parser, args, ResourceGroupOptions))
+            ResourceGroupOptions = ConsoleHelper.RunParseAndHandleArguments<ResourceGroupOptions>(parser, args);
+            if (ResourceGroupOptions==null)
             {
                 Console.WriteLine($"Failed to read deploymentObj: {JObject.FromObject(ResourceGroupOptions).ToString(Formatting.Indented)} ");
                 return;
             }
             var template = LoadTemplate(options);
-            var parametersObj = ParamterTypeGenerator.CreateFromParameters(template.SelectToken("parameters") as JObject ?? new JObject());
-            if (!parser.ParseArguments(args, parametersObj))
-            {
-                Console.WriteLine($"Failed to read parameterObj: {JObject.FromObject(parametersObj).ToString(Formatting.Indented)} ");
-                return;
-            }
 
-            Parameters = new JObject(
-                    JObject.FromObject(parametersObj).Properties()
-                        .Where(p => p.Value.Type != JTokenType.Null)
-                        .Select(p => ResourceManagerHelper.CreateValue(p.Name, p.Value)
-                ));
+            // var parametersObj = ParamterTypeGenerator.CreateFromParameters(template.SelectToken("parameters") as JObject ?? new JObject());
 
-            var prefix = "var";
-            var variablesObj = ParamterTypeGenerator.CreateFromVariables(template.SelectToken("variables") as JObject ?? new JObject(),prefix);
-            if (!parser.ParseArguments(args, variablesObj))
-            {
-                Console.WriteLine($"Failed to read variablesObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
-                return;
-            }
-            Variables = JObject.FromObject(variablesObj,JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            Parameters = new JObject(ParseObject(parser, args, null, template.SelectToken("variables") as JObject ?? new JObject())
+                            .Properties()
+                            .Where(p => p.Value.Type != JTokenType.Null)
+                            .Select(p => ResourceManagerHelper.CreateValue(p.Name, p.Value)));
+            Variables = ParseObject(parser, args, "var", template.SelectToken("variables") as JObject ?? new JObject());
+            OutVariables = ParseObject(parser, args, "out", template.SelectToken("outputs") as JObject ?? new JObject());
 
-            var outprefix = "out";
-            var outputVariablesObj = ParamterTypeGenerator.CreateFromOutputs(template.SelectToken("outputs") as JObject ?? new JObject(), outprefix);
-            if (!parser.ParseArguments(args, outputVariablesObj))
-            {
-                Console.WriteLine($"Failed to read outputVariablesObj: {JObject.FromObject(variablesObj).ToString(Formatting.Indented)} ");
-                return;
-            }
+        }
 
-            OutVariables = JObject.FromObject(outputVariablesObj);
+        private static JObject ParseObject(Parser parser, string[] args, string prefix, JObject obj)
+        {
+            return parser.ParseArguments(args, ParamterTypeGenerator.CompileResultType(obj, prefix))
+            .MapResult(variablesObj => JObject.FromObject(variablesObj, JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
+            errors => { Console.WriteLine($"Failed to read parameterObj: {string.Join(",", errors)} "); return null; });
         }
 
         public string GetOutputValue(string name)

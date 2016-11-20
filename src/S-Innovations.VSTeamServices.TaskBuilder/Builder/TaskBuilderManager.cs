@@ -116,7 +116,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             }
             if (!Directory.Exists(Path.Combine(outputDir, "ps_modules")))
             {
-                using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("SInnovations.VSTeamServices.TasksBuilder.ps_modules.zip"), ZipArchiveMode.Read))
+                using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("S-Innovations.VSTeamServices.TasksBuilder.ps_modules.zip"), ZipArchiveMode.Read))
                 {
                     zip.ExtractToDirectory(outputDir);
 
