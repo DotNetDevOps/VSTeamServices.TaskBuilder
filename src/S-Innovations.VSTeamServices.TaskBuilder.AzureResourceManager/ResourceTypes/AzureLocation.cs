@@ -1,12 +1,12 @@
 ﻿
-namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager.ResourceTypes
 {
     using System;
     using System.Reflection;
     using Attributes;
     using Newtonsoft.Json.Linq;
-    using SInnovations.VSTeamServices.TasksBuilder.Models;
-    using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+    using SInnovations.VSTeamServices.TaskBuilder.Models;
+    using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
     using Tasks;
 
     public class AzureLocation : ITaskInputFactory

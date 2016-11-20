@@ -2,11 +2,11 @@
 
 
 
-namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.ResourceTypes
 {
     using System.Reflection;
     using Attributes;
-    using SInnovations.VSTeamServices.TasksBuilder.Models;
+    using SInnovations.VSTeamServices.TaskBuilder.Models;
     using Tasks;
     public interface ITaskInputFactory
     {

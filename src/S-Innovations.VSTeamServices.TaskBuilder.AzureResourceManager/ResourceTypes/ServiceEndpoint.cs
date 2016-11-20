@@ -1,6 +1,6 @@
 ﻿
 
-namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager.ResourceTypes
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.Resource
     using Attributes;
     using CommandLine;
     using Microsoft.IdentityModel.Clients.ActiveDirectory;
-    using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
+    using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
 
     [ResourceType(TaskInputType = "connectedService:AzureRM")]
     public class ServiceEndpoint : IConsoleReader

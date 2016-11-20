@@ -1,5 +1,5 @@
 ﻿
-namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
+namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
 {
     using System;
     using System.Linq;

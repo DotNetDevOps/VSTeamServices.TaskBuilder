@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using CommandLine;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
 
 
 

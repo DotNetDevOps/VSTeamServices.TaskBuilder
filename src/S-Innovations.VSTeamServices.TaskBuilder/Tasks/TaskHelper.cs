@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json.Linq;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.Models;
-using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.Models;
+using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
+namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 {
     public class TaskHelper
     {

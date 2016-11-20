@@ -1,13 +1,13 @@
 ﻿
 
-namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.KeyVault.ResourceTypes
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using CommandLine;
-    using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-    using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+    using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+    using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
 
     /// <summary>
     /// Parsing options for <see cref="KeyVaultOutput"/> that is used to generate input options in vsts task.

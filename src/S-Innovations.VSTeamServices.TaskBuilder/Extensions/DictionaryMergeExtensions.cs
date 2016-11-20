@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Extensions
+namespace SInnovations.VSTeamServices.TaskBuilder.Extensions
 {
     public static class DictionaryMergeExtensions
     {

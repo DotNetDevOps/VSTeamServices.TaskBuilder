@@ -2,7 +2,17 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("TaskInstallerTests")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("TaskInstallerTests")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -10,16 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("D9BAFED4-AB18-4F58-968D-86655B4D2CE9")]
-
-[assembly: AssemblyInformationalVersion("1.0.25")]
-[assembly: AssemblyTitle("Update Nuget Packages Versions")]
-[assembly: AssemblyDescription("After building nuget packages that references eachother, the versions can be updated to match the references nuget packages.")]
-[assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]
-[assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
-[assembly: AssemblyConfiguration("Package")]
-[assembly: AssemblyCulture("")]
+[assembly: Guid("6a52d217-34df-457f-a6b1-c0074eaa235a")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0-pre",
+  "dependencies": {
+    "dotnet-test-mstest": "1.1.2-preview",
+    "MSTest.TestFramework": "1.0.6-preview",
+    "S-Innovations.VSTeamServices.TaskBuilder": "1.0.0-pre",
+    "S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager": "1.0.0-pre",
+    "S-Innovations.VSTeamServices.TaskBuilder.KeyVault": "1.0.0-pre",
+    "VSTeamServicesTaskGenerator": "1.0.0-*"
+  },
+  "testRunner": "mstest",
+  "buildOptions": {
+
+    "embed": [
+      
+    ]
+  },
+
+  "frameworks": {
+    "net452": {
+      "frameworkAssemblies": {
+      }
+    }
+  }
+}

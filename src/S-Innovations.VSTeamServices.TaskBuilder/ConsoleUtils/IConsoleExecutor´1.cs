@@ -1,5 +1,5 @@
 ﻿
-namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
+namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 {
     public interface IConsoleExecutor<T>
     {

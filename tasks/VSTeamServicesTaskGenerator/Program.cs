@@ -7,12 +7,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.Builder;
-using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
-using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.Builder;
+using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
 
-[assembly: AssemblyInformationalVersion("1.0.13")]
+[assembly: AssemblyInformationalVersion("1.0.14")]
 [assembly: AssemblyTitle("VisualStudio TeamServices Task Generator")]
 [assembly: AssemblyDescription("Generate Visual Studio Team Services Tasks using S-Innovations Task Library")]
 [assembly: AssemblyCompany("S-Innovations v/Poul Kjeldager Sørensen")]

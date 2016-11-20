@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.Models;
-using SInnovations.VSTeamServices.TasksBuilder.Tasks;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.Models;
+using SInnovations.VSTeamServices.TaskBuilder.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Builder
+namespace SInnovations.VSTeamServices.TaskBuilder.Builder
 {
 
     class CamelCase : CamelCasePropertyNamesContractResolver
@@ -38,7 +38,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
         }
     }
 
-    internal class TaskBuilder
+    public class TaskBuilder
     {
      
         public static void BuildSelf()
@@ -116,7 +116,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.Builder
             }
             if (!Directory.Exists(Path.Combine(outputDir, "ps_modules")))
             {
-                using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("S-Innovations.VSTeamServices.TasksBuilder.ps_modules.zip"), ZipArchiveMode.Read))
+                using (var zip = new ZipArchive(typeof(TaskBuilder).Assembly.GetManifestResourceStream("S-Innovations.VSTeamServices.TaskBuilder.ps_modules.zip"), ZipArchiveMode.Read))
                 {
                     zip.ExtractToDirectory(outputDir);
 

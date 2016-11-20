@@ -1,7 +1,7 @@
 ﻿
 
 
-namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
+namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 {
     using System.Reflection;
     using CommandLine;

@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using SInnovations.VSTeamServices.TasksBuilder.Tasks;
+using SInnovations.VSTeamServices.TaskBuilder.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
+namespace SInnovations.VSTeamServices.TaskBuilder.Attributes
 {
 
     public class SourceDefinitionAttribute : Attribute

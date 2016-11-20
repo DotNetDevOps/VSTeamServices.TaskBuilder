@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SInnovations.VSTeamServices.TasksBuilder.Tasks;
+using SInnovations.VSTeamServices.TaskBuilder.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Models
+namespace SInnovations.VSTeamServices.TaskBuilder.Models
 {
     [JsonConverter(typeof(TaskExecutionConverter))]
     public class TaskExecution

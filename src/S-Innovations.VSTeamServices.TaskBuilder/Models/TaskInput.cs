@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Models
+namespace SInnovations.VSTeamServices.TaskBuilder.Models
 {
     public class TaskInput
     {

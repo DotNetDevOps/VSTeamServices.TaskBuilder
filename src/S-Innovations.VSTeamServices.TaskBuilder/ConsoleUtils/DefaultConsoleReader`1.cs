@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.Models;
-using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
-using SInnovations.VSTeamServices.TasksBuilder.Tasks;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.Models;
+using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
+using SInnovations.VSTeamServices.TaskBuilder.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
+namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 {
     /// <summary>
     /// Base Implementation of a Console Reader and TaskFactory, where input properties will be generated for T and also parsed when executing.

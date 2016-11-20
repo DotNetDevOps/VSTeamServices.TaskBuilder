@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Models
+namespace SInnovations.VSTeamServices.TaskBuilder.Models
 {
     public class SourceDefinition
     {

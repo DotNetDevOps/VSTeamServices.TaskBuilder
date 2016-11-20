@@ -2,7 +2,7 @@
 
 
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
+namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 {
     using System;
     using Models;

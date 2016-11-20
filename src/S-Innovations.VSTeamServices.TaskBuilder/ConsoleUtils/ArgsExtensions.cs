@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
+namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 {
     public static class ArgsExtensions
     {
@@ -46,7 +46,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils
 
                 var op = propInfo.GetCustomAttribute<OptionAttribute>();
 
-                return new[] { $"-{op?.ShortName?.ToString() ?? $"-{op.LongName}" }", value.ToString() };
+                return new[] { $"-{op?.ShortName?.ToString() ?? $"--{op.LongName}" }", value.ToString() };
             });
             if(string.IsNullOrEmpty(path))
                 return args.Concat(props.SelectMany(a => a)).ToArray();

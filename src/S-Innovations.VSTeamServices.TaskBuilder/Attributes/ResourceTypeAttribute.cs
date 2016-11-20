@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
+namespace SInnovations.VSTeamServices.TaskBuilder.Attributes
 {
     public class ResourceTypeAttribute : Attribute
     {

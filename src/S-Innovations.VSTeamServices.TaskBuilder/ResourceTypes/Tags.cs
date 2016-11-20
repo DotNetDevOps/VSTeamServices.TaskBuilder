@@ -6,13 +6,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
-using SInnovations.VSTeamServices.TasksBuilder.Extensions;
-using SInnovations.VSTeamServices.TasksBuilder.Models;
-using SInnovations.VSTeamServices.TasksBuilder.Tasks;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TaskBuilder.Extensions;
+using SInnovations.VSTeamServices.TaskBuilder.Models;
+using SInnovations.VSTeamServices.TaskBuilder.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.ResourceTypes
 {
     public class Tags : IConsoleReader, ITaskInputFactory
     {

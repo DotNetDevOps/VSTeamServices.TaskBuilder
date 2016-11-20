@@ -1,6 +1,6 @@
 ﻿
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Attributes
+namespace SInnovations.VSTeamServices.TaskBuilder.Attributes
 {
     using System;
 

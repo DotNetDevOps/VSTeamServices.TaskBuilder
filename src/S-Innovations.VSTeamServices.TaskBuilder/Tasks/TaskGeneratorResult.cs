@@ -1,8 +1,8 @@
 ﻿
-namespace SInnovations.VSTeamServices.TasksBuilder.Tasks
+namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 {
     using System.Collections.Generic;
-    using SInnovations.VSTeamServices.TasksBuilder.Models;
+    using SInnovations.VSTeamServices.TaskBuilder.Models;
 
     public class TaskGeneratorResult
     {

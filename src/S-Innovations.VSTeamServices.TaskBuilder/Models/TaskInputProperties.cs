@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Models
+namespace SInnovations.VSTeamServices.TaskBuilder.Models
 {
     public class TaskInputProperties
     {

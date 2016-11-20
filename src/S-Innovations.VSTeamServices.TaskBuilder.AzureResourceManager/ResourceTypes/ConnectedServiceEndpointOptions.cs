@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager.ResourceTypes
 {
     public class ConnectedServiceEndpointOptions
     {

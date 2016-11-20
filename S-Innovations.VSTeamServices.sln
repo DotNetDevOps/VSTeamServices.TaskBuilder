@@ -1,23 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksBuilder", "src\TasksBuilder.Core\TasksBuilder.csproj", "{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksBuilder.AzureResourceManager", "src\TasksBuilder.AzureResourceManager\TasksBuilder.AzureResourceManager.csproj", "{D67EA103-01B0-4CDB-A6C2-4FABC5498139}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksBuilder.KeyVault", "src\TasksBuilder.KeyVault\TasksBuilder.KeyVault.csproj", "{4266963C-D429-4FBB-ADBB-F1445471536E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{053EF88A-5E86-415F-95E0-20ABD4D36C34}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{65ACA999-A78B-45FA-AEBC-93BEE94BF682}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTeamServicesTaskGenerator", "apps\VSTeamServicesTaskGenerator\VSTeamServicesTaskGenerator.csproj", "{C1DB2C62-E053-472B-B50F-068D0DC2DA9F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".licenses", ".licenses", "{9870EC89-D141-4DEB-8048-E3064E7CD42F}"
 	ProjectSection(SolutionItems) = preProject
 		default.licenseheader = default.licenseheader
@@ -25,7 +10,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".licenses", ".licenses", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tasks", "Tasks", "{ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateNugetPackageVersionsTask", "tasks\UpdateNugetPackageVersionsTask\UpdateNugetPackageVersionsTask.csproj", "{D91464C3-A104-4247-9C62-21CE5E6E00C5}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServices.TaskBuilder", "src\S-Innovations.VSTeamServices.TaskBuilder\S-Innovations.VSTeamServices.TaskBuilder.xproj", "{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager", "src\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager.xproj", "{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServices.TaskBuilder.KeyVault", "src\S-Innovations.VSTeamServices.TaskBuilder.KeyVault\S-Innovations.VSTeamServices.TaskBuilder.KeyVault.xproj", "{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DE301744-A5BB-49FE-AEED-98ABCD4F47F2}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServicces.TaskBuilder.Tests", "tests\S-Innovations.VSTeamServicces.TaskBuilder.Tests\S-Innovations.VSTeamServicces.TaskBuilder.Tests.xproj", "{425FD48D-D8AD-4CA9-922E-7EBF669A216E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{739201E4-4BB2-480B-A122-A9BF153F1C0F}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UpdateNugetPackageVersionsTask", "tasks\UpdateNugetPackageVersionsTask\UpdateNugetPackageVersionsTask.xproj", "{DF7CBF86-86DB-4982-A2F9-A1DED546841E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "VSTeamServicesTaskGenerator", "tasks\VSTeamServicesTaskGenerator\VSTeamServicesTaskGenerator.xproj", "{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,32 +35,37 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{274C966B-3F90-43C8-9F67-8EAE1FCC8E2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D67EA103-01B0-4CDB-A6C2-4FABC5498139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D67EA103-01B0-4CDB-A6C2-4FABC5498139}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D67EA103-01B0-4CDB-A6C2-4FABC5498139}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D67EA103-01B0-4CDB-A6C2-4FABC5498139}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4266963C-D429-4FBB-ADBB-F1445471536E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4266963C-D429-4FBB-ADBB-F1445471536E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4266963C-D429-4FBB-ADBB-F1445471536E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4266963C-D429-4FBB-ADBB-F1445471536E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1DB2C62-E053-472B-B50F-068D0DC2DA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1DB2C62-E053-472B-B50F-068D0DC2DA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1DB2C62-E053-472B-B50F-068D0DC2DA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1DB2C62-E053-472B-B50F-068D0DC2DA9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D91464C3-A104-4247-9C62-21CE5E6E00C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D91464C3-A104-4247-9C62-21CE5E6E00C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D91464C3-A104-4247-9C62-21CE5E6E00C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D91464C3-A104-4247-9C62-21CE5E6E00C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{425FD48D-D8AD-4CA9-922E-7EBF669A216E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{425FD48D-D8AD-4CA9-922E-7EBF669A216E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{425FD48D-D8AD-4CA9-922E-7EBF669A216E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{425FD48D-D8AD-4CA9-922E-7EBF669A216E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF7CBF86-86DB-4982-A2F9-A1DED546841E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF7CBF86-86DB-4982-A2F9-A1DED546841E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF7CBF86-86DB-4982-A2F9-A1DED546841E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF7CBF86-86DB-4982-A2F9-A1DED546841E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C1DB2C62-E053-472B-B50F-068D0DC2DA9F} = {65ACA999-A78B-45FA-AEBC-93BEE94BF682}
-		{D91464C3-A104-4247-9C62-21CE5E6E00C5} = {ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}
+		{425FD48D-D8AD-4CA9-922E-7EBF669A216E} = {DE301744-A5BB-49FE-AEED-98ABCD4F47F2}
+		{DF7CBF86-86DB-4982-A2F9-A1DED546841E} = {ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}
+		{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B} = {ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}
 	EndGlobalSection
 EndGlobal

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.Models
+namespace SInnovations.VSTeamServices.TaskBuilder.Models
 {
     public class TaskJson
     {

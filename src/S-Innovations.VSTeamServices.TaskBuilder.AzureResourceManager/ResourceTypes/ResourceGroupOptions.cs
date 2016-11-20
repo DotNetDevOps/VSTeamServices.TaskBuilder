@@ -1,12 +1,12 @@
 ﻿
-namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager.ResourceTypes
 {
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using Attributes;
     using CommandLine;
-    using TasksBuilder.ResourceTypes;
+    using TaskBuilder.ResourceTypes;
 
     [Group(DisplayName = "Deployment", isExpanded = true, Name = "TemplateDeploymentOptions")]
     public class ResourceGroupOptions

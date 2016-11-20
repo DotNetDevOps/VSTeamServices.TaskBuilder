@@ -12,12 +12,12 @@ using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json.Linq;
 using SInnovations.Azure.ResourceManager;
 using SInnovations.Azure.ResourceManager.TemplateActions;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager;
-using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes;
-using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager;
+using SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager.ResourceTypes;
+using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.KeyVault.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.KeyVault.ResourceTypes
 {
     public static class KeyVaultOutputExtensions
     {

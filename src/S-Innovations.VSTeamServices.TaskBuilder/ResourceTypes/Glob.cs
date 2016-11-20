@@ -8,10 +8,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommandLine;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
+namespace SInnovations.VSTeamServices.TaskBuilder.ResourceTypes
 {
     enum TokenKind
     {
@@ -507,7 +507,7 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
             return string.Empty;
         }
     }
-    class Glob
+    public class Glob
     {
         public string Pattern { get; private set; }
 
@@ -591,21 +591,18 @@ namespace SInnovations.VSTeamServices.TasksBuilder.ResourceTypes
                 var i = 0;
              //   for (var i = 0; i < chain.Length; i++)
                 {
-                    var step = chain[i];
-
-                   
-                    
-
+                    var step = chain[i++];
                     foreach (var file in EnumeratePattern(root, step))
                     {
                         var newRoot = Path.GetDirectoryName(file);
-                        while (i < chain.Length && chain[++i] == string.Empty)
+                        var j = i;
+                        while (j < chain.Length && chain[j] == string.Empty)
                         {
                             newRoot = Path.GetDirectoryName(file);
-                         
+                            j++;                         
                         }
 
-                        var newPattern = string.Join("/..", chain.Skip(i));
+                        var newPattern = string.Join("/..", chain.Skip(j));
                         Pattern = (newRoot + newPattern);
                         SetRoot();
 

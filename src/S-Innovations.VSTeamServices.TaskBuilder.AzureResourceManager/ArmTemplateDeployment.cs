@@ -10,15 +10,15 @@ using Humanizer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SInnovations.Azure.ResourceManager;
-using SInnovations.VSTeamServices.TasksBuilder.Attributes;
-using SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager.ResourceTypes;
-using SInnovations.VSTeamServices.TasksBuilder.ConsoleUtils;
-using SInnovations.VSTeamServices.TasksBuilder.Extensions;
-using SInnovations.VSTeamServices.TasksBuilder.Models;
-using SInnovations.VSTeamServices.TasksBuilder.ResourceTypes;
-using SInnovations.VSTeamServices.TasksBuilder.Tasks;
+using SInnovations.VSTeamServices.TaskBuilder.Attributes;
+using SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager.ResourceTypes;
+using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
+using SInnovations.VSTeamServices.TaskBuilder.Extensions;
+using SInnovations.VSTeamServices.TaskBuilder.Models;
+using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
+using SInnovations.VSTeamServices.TaskBuilder.Tasks;
 
-namespace SInnovations.VSTeamServices.TasksBuilder.AzureResourceManager
+namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
 {
     public class SimpleArmTemplateDeployment<T> : ArmTemplateDeployment<T, ResourceSource> where T: ArmTemplateOptions<T>, new()
     {
