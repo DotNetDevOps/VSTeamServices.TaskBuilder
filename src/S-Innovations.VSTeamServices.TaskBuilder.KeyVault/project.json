@@ -4,7 +4,7 @@
   "dependencies": {
     "S-Innovations.VSTeamServices.TaskBuilder": "1.0.0-pre",
     "S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager": "1.0.0-pre",
-    "Microsoft.Azure.KeyVault": "2.0.4-preview"
+    "Microsoft.Azure.KeyVault": "2.0.6"
   },
   "packOptions": {
     "tags": [ "S-Innovations", "VSTS" ]
