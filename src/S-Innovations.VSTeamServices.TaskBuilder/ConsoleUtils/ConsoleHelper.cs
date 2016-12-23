@@ -33,88 +33,102 @@ namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 
             return rest.Concat(bools).ToArray();
         }
+
+        public static T RunParseAndHandleArguments<T>(Parser parser, Func<T> factory, string[] args) where T : new()
+        {
+            return parser.ParseArguments<T>(factory, args).MapResult(options =>
+            {
+                return MapResult(parser, args, options);
+            }, (o) => default(T));
+
+        }
         public static T RunParseAndHandleArguments<T>(Parser parser, string[] args)
         {
             return parser.ParseArguments<T>(args).MapResult(options =>
             {
-
-                var props = typeof(T).GetProperties().Where(p =>
-                    Attribute.IsDefined(p, typeof(DisplayAttribute)))
-                    .Select(p => new { PropertyInfo = p, DisplayAttribute = p.GetCustomAttribute<DisplayAttribute>() })
-                    .Where(p => p.DisplayAttribute.ResourceType != null)
-                    .Select(p => new
-                    {
-                        p.DisplayAttribute,
-                        p.PropertyInfo,
-                        h = (p.DisplayAttribute.ResourceType == p.PropertyInfo.PropertyType ||
-                            (p.DisplayAttribute.ResourceType.IsGenericTypeDefinition && p.DisplayAttribute.ResourceType == p.PropertyInfo.PropertyType.GetGenericTypeDefinition()))
-                                ? p.PropertyInfo.GetValue(options)
-                                    ?? Activator.CreateInstance(p.DisplayAttribute.ResourceType.IsGenericTypeDefinition
-                                        ? p.PropertyInfo.PropertyType
-                                        : p.DisplayAttribute.ResourceType)
-                                : Activator.CreateInstance(p.DisplayAttribute.ResourceType)
-                    })
-                    .OrderBy(p => p.DisplayAttribute.GetOrder() ?? 10).ToArray();
-
-                foreach (var p in props)
-                {
-                    var att = p.DisplayAttribute;
-                    var prop = p.PropertyInfo;
-                    var handler = p.h;
-                    // var att = prop.GetCustomAttribute<DisplayAttribute>();
-                    //if (att?.ResourceType != null)
-                    // {
-
-
-
-
-                    if (handler is IConsoleReader)
-                    {
-                        var consoleReader = handler as IConsoleReader;
-                        consoleReader.OnConsoleParsing(parser, args, options, prop);
-                    }
-
-                    if (handler is IConsoleReader<T>)
-                    {
-                        var consoleReader = handler as IConsoleReader<T>;
-                        consoleReader.OnConsoleParsing(parser, args, options, prop);
-                    }
-
-                    if (prop.PropertyType == att.ResourceType || att.ResourceType.IsSubclassOf(prop.PropertyType))
-                    {
-                        prop.SetValue(options, handler);
-                    }
-                    else if (!prop.PropertyType.IsPrimitive)
-                    {
-                        try
-                        {
-                            prop.SetValue(options, prop.GetValue(options) ?? Activator.CreateInstance(prop.PropertyType));
-                        }
-                        catch (MissingMethodException ctor)
-                        {
-                            Console.WriteLine("Warning: " + ctor.ToString());
-                            Console.WriteLine(prop.PropertyType.FullName.ToString());
-                        }
-                    }
-
-                    //  }
-                }
-
-                foreach (var p in props)
-                {
-                    if (p.h is IConsoleExecutor)
-                    {
-                        (p.h as IConsoleExecutor).Execute(options);
-                    }
-                    if (p.h is IConsoleExecutor<T>)
-                        (p.h as IConsoleExecutor<T>).Execute(options);
-                }
-
-                return options;
+                return MapResult(parser, args, options);
             }, (o) => default(T));
              
 
         }
+
+        private static T MapResult<T>(Parser parser, string[] args, T options)
+        {
+            var props = typeof(T).GetProperties().Where(p =>
+                                Attribute.IsDefined(p, typeof(DisplayAttribute)))
+                                .Select(p => new { PropertyInfo = p, DisplayAttribute = p.GetCustomAttribute<DisplayAttribute>() })
+                                .Where(p => p.DisplayAttribute.ResourceType != null)
+                                .Select(p => new
+                                {
+                                    p.DisplayAttribute,
+                                    p.PropertyInfo,
+                                    h = (p.DisplayAttribute.ResourceType == p.PropertyInfo.PropertyType ||
+                                        (p.DisplayAttribute.ResourceType.IsGenericTypeDefinition && p.DisplayAttribute.ResourceType == p.PropertyInfo.PropertyType.GetGenericTypeDefinition()))
+                                            ? p.PropertyInfo.GetValue(options)
+                                                ?? Activator.CreateInstance(p.DisplayAttribute.ResourceType.IsGenericTypeDefinition
+                                                    ? p.PropertyInfo.PropertyType
+                                                    : p.DisplayAttribute.ResourceType)
+                                            : Activator.CreateInstance(p.DisplayAttribute.ResourceType)
+                                })
+                                .OrderBy(p => p.DisplayAttribute.GetOrder() ?? 10).ToArray();
+
+            foreach (var p in props)
+            {
+                var att = p.DisplayAttribute;
+                var prop = p.PropertyInfo;
+                var handler = p.h;
+                // var att = prop.GetCustomAttribute<DisplayAttribute>();
+                //if (att?.ResourceType != null)
+                // {
+
+
+
+
+                if (handler is IConsoleReader)
+                {
+                    var consoleReader = handler as IConsoleReader;
+                    consoleReader.OnConsoleParsing(parser, args, options, prop);
+                }
+
+                if (handler is IConsoleReader<T>)
+                {
+                    var consoleReader = handler as IConsoleReader<T>;
+                    consoleReader.OnConsoleParsing(parser, args, options, prop);
+                }
+
+                if (prop.PropertyType == att.ResourceType || att.ResourceType.IsSubclassOf(prop.PropertyType))
+                {
+                    prop.SetValue(options, handler);
+                }
+                else if (!prop.PropertyType.IsPrimitive)
+                {
+                    try
+                    {
+                        prop.SetValue(options, prop.GetValue(options) ?? Activator.CreateInstance(prop.PropertyType));
+                    }
+                    catch (MissingMethodException ctor)
+                    {
+                        Console.WriteLine("Warning: " + ctor.ToString());
+                        Console.WriteLine(prop.PropertyType.FullName.ToString());
+                    }
+                }
+
+                //  }
+            }
+
+            foreach (var p in props)
+            {
+                if (p.h is IConsoleExecutor)
+                {
+                    (p.h as IConsoleExecutor).Execute(options);
+                }
+                if (p.h is IConsoleExecutor<T>)
+                    (p.h as IConsoleExecutor<T>).Execute(options);
+            }
+
+            return options;
+        }
+
         public static T ParseAndHandleArguments<T>(string Message, string[] args, bool ignoreError = false) where T : new()
         {
             if(args.Length == 1 && args.First() == "--build")
