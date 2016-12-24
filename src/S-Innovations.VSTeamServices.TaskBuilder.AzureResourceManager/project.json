@@ -4,7 +4,7 @@
   "dependencies": {
     "CommandLineParser": "2.1.1-beta",
     "Humanizer.Core": "2.1.0",
-    "S-Innovations.Azure.ResourceManager": "2.0.0-pre-2016111912",
+    "S-Innovations.Azure.ResourceManager": "2.0.0-pre-2016122301",
     "S-Innovations.VSTeamServices.TaskBuilder": "1.0.0-pre"
   },
   "packOptions": {

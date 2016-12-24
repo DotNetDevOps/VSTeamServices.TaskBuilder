@@ -144,7 +144,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.KeyVault.ResourceTypes
 
         public async Task<SaveCertificateResult> SaveCertificateAsync(Func<byte[]> certGenerator, string password, Dictionary<string, string> tags = null, TimeSpan? saveIfCurrentExpiresWithin = null, string secretContentType= "application/x-pkcs12")
         {
-
+            tags = tags ?? new Dictionary<string, string>();
             var vaultUri = $"https://{VaultName}.vault.azure.net";
             var secrets = await KeyVaultClient.GetSecretsAsync(vaultUri);
 
