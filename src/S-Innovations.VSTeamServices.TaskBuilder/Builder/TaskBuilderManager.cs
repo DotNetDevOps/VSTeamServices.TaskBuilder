@@ -216,8 +216,14 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
                     case "filePath":
                     case "string":
                     case "pickList":
-                        if(input.IsJsonArray)
-                            writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',		${input.Name})  }}");
+                        if (input.IsJsonArray)
+                        {
+                            //  $arg4 = '';
+                            //  foreach ($element in $DeploymentName) {$arg4 = $arg4 + ' ' + ('"' + $element + '"')}
+                            writer.WriteLine($"$arg{i} = '--{input.Name}'");
+                            writer.WriteLine($"foreach ($element in $DeploymentName) {{$arg{i} = $arg{i} + ' ' + ('\"' + $element + '\"')}}");
+                          //  writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',		${input.Name})  }}");
+                        }
                         else
                             writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',			('\"'+${input.Name}+'\"'))  }}");
                         break;
