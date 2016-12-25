@@ -16,6 +16,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Models
         }
         public string Name { get; set; }
         public string Type { get; set; }
+        [JsonIgnore]
+        public bool IsArray { get; set; }
         public string Label { get; set; }
         public JToken DefaultValue { get; set; }
         public bool Required { get; set; }

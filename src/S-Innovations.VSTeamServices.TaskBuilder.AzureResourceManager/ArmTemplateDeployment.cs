@@ -253,6 +253,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
                   GroupName = "ArmVars",
                   Label = t.Name,
                   Type = GetVariableType(t) ,
+                  IsArray = t.Value.Type == JTokenType.Array
               }
             ).ToArray();
 
@@ -295,8 +296,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
 
         private string GetVariableType(JProperty t)
         {
-            if(t.Value.Type == JTokenType.Array)
-                return "stringArray";
+          //  if(t.Value.Type == JTokenType.Array)
+          //      return "stringArray";
             return "string";
         }
 
