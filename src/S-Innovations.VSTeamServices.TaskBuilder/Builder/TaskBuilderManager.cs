@@ -194,7 +194,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
 
             foreach (var input in inputs)
             {
-                writer.WriteLine($"[{(input.Type == "boolean" ?"bool":"string")}]${input.Name} = Get-VstsInput -Name {input.Name} {(input.Required && string.IsNullOrEmpty(input.VisibleRule)? "-Require ":"")}{(input.Type == "boolean"? "-AsBool ":"")}");
+                writer.WriteLine($"[{(input.Type == "boolean" ?"bool":"string")}]${input.Name} = Get-VstsInput -Name {input.Name} {(input.Required && string.IsNullOrEmpty(input.VisibleRule)? "-Require ":"")}{(input.Type == "boolean"? "-AsBool ":"")}{( input.IsJsonArray ? " | ConvertFrom-Json" : "")}");
             }
           
 
@@ -216,8 +216,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
                     case "filePath":
                     case "string":
                     case "pickList":
-                        if(input.IsArray)
-                            writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',			(${input.Name}))  }}");
+                        if(input.IsJsonArray)
+                            writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',		${input.Name})  }}");
                         else
                             writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',			('\"'+${input.Name}+'\"'))  }}");
                         break;

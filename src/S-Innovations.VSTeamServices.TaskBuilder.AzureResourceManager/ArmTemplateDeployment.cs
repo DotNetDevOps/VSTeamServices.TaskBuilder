@@ -253,7 +253,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
                   GroupName = "ArmVars",
                   Label = t.Name,
                   Type = GetVariableType(t) ,
-                  IsArray = t.Value.Type == JTokenType.Array
+                  IsJsonArray = t.Value.Type == JTokenType.Array
               }
             ).ToArray();
 
@@ -309,7 +309,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
             }
             if(t.Value.Type == JTokenType.Array)
             {
-                return string.Join(" ", t.Value.Select(token => $"\"{token.ToObject<string>()}\""));
+                return t.Value.ToString(Formatting.None);
             }
             throw new NotImplementedException($"Type {t.Name}: {t.Value.Type} not supported in variables");
         }
