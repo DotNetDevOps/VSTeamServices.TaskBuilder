@@ -2,6 +2,7 @@
 namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -79,8 +80,16 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
             }
             else
             {
-                PropertyInfo conProperty = typeof(OptionAttribute).GetProperty("DefaultValue");
-                var builder = new CustomAttributeBuilder(ci, new object[] { consoleArg }, new[] { conProperty }, new object[] { defaultValue});
+                List<PropertyInfo> conProperty = new List<PropertyInfo> { typeof(OptionAttribute).GetProperty("Default") };
+                List<Object> values = new List<object> { defaultValue };
+                if (propertyType == typeof(IEnumerable<string>))
+                {
+                   
+                    conProperty.Add(typeof(OptionAttribute).GetProperty("Separator"));
+                    values.Add(' ');
+                }
+
+                var builder = new CustomAttributeBuilder(ci, new object[] { consoleArg }, conProperty.ToArray(), values.ToArray());
                 propertyBuilder.SetCustomAttribute(builder);
 
             }
@@ -126,27 +135,38 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
             if (token.Type == JTokenType.Integer)
                 return typeof(int?);
 
-
-            var parameterObj = token as JObject;
-            var type = parameterObj.SelectToken("type").ToObject<string>().ToLower();
-            
-            switch (type)
+            if (token.Type == JTokenType.Object)
             {
-                case "object":
-                case "string":
-                case "securestring":
-                case "picklist":
-                    defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<string>();
-                    return typeof(string);
-                case "bool":
-                    defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<bool>();
-                    return typeof(bool);
-                case "int":
-                    defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<int>();
-                    return typeof(int);
-             
+                var parameterObj = token as JObject;
+                var type = parameterObj.SelectToken("type").ToObject<string>().ToLower();
+
+                switch (type)
+                {
+                    case "object":
+                    case "string":
+                    case "securestring":
+                    case "picklist":
+                        defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<string>();
+                        return typeof(string);
+                    case "bool":
+                        defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<bool>();
+                        return typeof(bool);
+                    case "int":
+                        defaultValue = parameterObj.SelectToken("defaultValue")?.ToObject<int>();
+                        return typeof(int);
+
+                }
+                throw new NotImplementedException($"{type} not implemented");
             }
-            throw new NotImplementedException($"{type} not implemented");
+
+            if( token.Type == JTokenType.Array)
+            {
+                defaultValue = token.ToObject<string[]>();
+                return typeof(IEnumerable<string>);
+            }
+
+            throw new NotImplementedException($"{token.Type} not implemented");
+           
         }
     }
 }

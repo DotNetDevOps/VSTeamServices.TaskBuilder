@@ -45,8 +45,12 @@ namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 
 
                 var op = propInfo.GetCustomAttribute<OptionAttribute>();
+                if ((op?.ShortName?.Length ?? 0) > 0)
+                {
+                    return new[] { $"-{op.ShortName}", value.ToString() };
+                }
 
-                return new[] { $"-{op?.ShortName?.ToString() ?? $"--{op.LongName}" }", value.ToString() };
+                return new[] { $"--{op.LongName}", value.ToString() };
             });
             if(string.IsNullOrEmpty(path))
                 return args.Concat(props.SelectMany(a => a)).ToArray();

@@ -101,7 +101,16 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
         //    return LoadTemplate(null).SelectToken("parameters") as JObject ?? new JObject();
         //}
     }
-
+    public static class ParseHelper
+    {
+        public static JObject MapOk<T1>(ParserResult<T1> result)
+        {
+            return result.MapResult(variablesObj => JObject.FromObject(variablesObj, JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
+            errors => {
+                Console.WriteLine($"Failed to read parameterObj: {string.Join(",", errors)} "); return null;
+            });
+        }
+    }
     public abstract class ArmTemplateDeployment<T> : IConsoleExecutor<T>, ITaskInputFactory, IConsoleReader<T>
           where T : class,new()
     {
@@ -142,21 +151,34 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
             var template = LoadTemplate(options);
 
             // var parametersObj = ParamterTypeGenerator.CreateFromParameters(template.SelectToken("parameters") as JObject ?? new JObject());
-
-            Parameters = new JObject(ParseObject(parser, args, null, template.SelectToken("variables") as JObject ?? new JObject())
+            var props = ParseObject(parser, args, null, template.SelectToken("parameters") as JObject ?? new JObject())
                             .Properties()
                             .Where(p => p.Value.Type != JTokenType.Null)
-                            .Select(p => ResourceManagerHelper.CreateValue(p.Name, p.Value)));
+                            .Select(p => ResourceManagerHelper.CreateValue(p.Name, p.Value));
+            Parameters = new JObject(props);
             Variables = ParseObject(parser, args, "var", template.SelectToken("variables") as JObject ?? new JObject());
             OutVariables = ParseObject(parser, args, "out", template.SelectToken("outputs") as JObject ?? new JObject());
 
         }
-
+       
         private static JObject ParseObject(Parser parser, string[] args, string prefix, JObject obj)
         {
-            return parser.ParseArguments(args, ParamterTypeGenerator.CompileResultType(obj, prefix))
-            .MapResult(variablesObj => JObject.FromObject(variablesObj, JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
-            errors => { Console.WriteLine($"Failed to read parameterObj: {string.Join(",", errors)} "); return null; });
+            var objResult = ParamterTypeGenerator.CompileResultType(obj, prefix);
+            var method = typeof(Parser).GetMethod("ParseArguments",new Type[] { typeof(string[]) }).MakeGenericMethod(objResult);
+            var result = method.Invoke(parser, new object[] { args });
+            
+            return typeof(ParseHelper).GetMethod("MapOk", BindingFlags.Static | BindingFlags.Public).MakeGenericMethod(objResult).Invoke(null,new object[] { result }) as JObject;
+
+             
+            //return ParserResultExtensions.MapResult<Object,JObject>(result, 
+            //    variablesObj => JObject.FromObject(variablesObj, JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
+            //    , errors => { Console.WriteLine($"Failed to read parameterObj: {string.Join(",", errors)} "); return null;   });
+
+            //return parser.ParseArguments<Object>(args)
+            //.MapResult(variablesObj => JObject.FromObject(variablesObj, JsonSerializer.Create(new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
+            //errors => {
+            //    Console.WriteLine($"Failed to read parameterObj: {string.Join(",", errors)} "); return null;
+            //});
         }
 
         public string GetOutputValue(string name)
@@ -167,7 +189,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
            
         public virtual TaskGeneratorResult GenerateTasks(string groupName, TaskInput defaultTask, PropertyInfo parent)
         {
-            
+
             var optionValues = this.GetType().GetCustomAttributes<AllowedValueOptionAttribute>().ToLookup(k => k.ParameterName);
             var template = LoadTemplate(new T());
             var inputs = template.SelectToken("parameters").OfType<JProperty>().Select(t =>
@@ -179,14 +201,14 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
                 JObject options = null;
                 if (allowedValues.Any())
                 {
-                    options = new JObject(allowedValues.Select(k => 
-                                        new JProperty(k,  
-                                            (optionValues.Contains(variableName) && optionValues[variableName].Any(v=>v.OptionName== k) ?
+                    options = new JObject(allowedValues.Select(k =>
+                                        new JProperty(k,
+                                            (optionValues.Contains(variableName) && optionValues[variableName].Any(v => v.OptionName == k) ?
                                                     optionValues[variableName].Single(v => v.OptionName == k).OptionValue :
                                                     k
                                             ).Humanize(LetterCasing.Title))));
                 }
-                
+
                 return new TaskInput
                 {
                     Name = variableName,
@@ -201,10 +223,10 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
 
             }).ToArray();
 
-           
-          
 
-            var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions),parent);
+
+
+            var result = TaskHelper.GetTaskInputs(typeof(ResourceGroupOptions), parent);
             result.Inputs.AddRange(inputs);
 
             var attrs = parent?.GetCustomAttributes<ParameterSourceDefinitionAttribute>().ToArray() ?? new ParameterSourceDefinitionAttribute[0];
@@ -212,25 +234,25 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
             {
                 var authKeyProvier = sd.ConnectedService ?? parent.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService;
 
-                    result.SourceDefinitions.Add(new SourceDefinition
-                    {
-                        Endpoint = sd.Endpoint,
-                        AuthKey = authKeyProvier==null?null:(Activator.CreateInstance(authKeyProvier) as AuthKeyProvider)?.GetAuthKey(),
-                        Selector = sd.Selector,
-                        KeySelector = sd.KeySelector ?? "",
-                        Target = sd.ParameterName
-                    });
-                
+                result.SourceDefinitions.Add(new SourceDefinition
+                {
+                    Endpoint = sd.Endpoint,
+                    AuthKey = authKeyProvier == null ? null : (Activator.CreateInstance(authKeyProvier) as AuthKeyProvider)?.GetAuthKey(),
+                    Selector = sd.Selector,
+                    KeySelector = sd.KeySelector ?? "",
+                    Target = sd.ParameterName
+                });
+
             }
 
             var variables = template.SelectToken("variables")?.OfType<JProperty>().Select(t =>
               new TaskInput()
               {
                   Name = $"var{t.Name}",
-                  DefaultValue = t.Value.ToString(),
+                  DefaultValue = GetVariableDefaultValue(t),
                   GroupName = "ArmVars",
                   Label = t.Name,
-                  Type = "string",
+                  Type = GetVariableType(t) ,
               }
             ).ToArray();
 
@@ -239,8 +261,9 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
                 result.Inputs.AddRange(variables);
                 result.Groups.Add(new Group
                 {
-                     DisplayName = "Arm Template Variables",
-                     Name ="ArmVars", IsExpanded = false,
+                    DisplayName = "Arm Template Variables",
+                    Name = "ArmVars",
+                    IsExpanded = false,
                 });
             }
 
@@ -268,6 +291,26 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
 
             return result;
 
+        }
+
+        private string GetVariableType(JProperty t)
+        {
+            if(t.Value.Type == JTokenType.Array)
+                return "stringArray";
+            return "string";
+        }
+
+        private static string GetVariableDefaultValue(JProperty t)
+        {
+            if (t.Value.Type == JTokenType.String)
+            {
+                return t.Value.ToString(Formatting.None);
+            }
+            if(t.Value.Type == JTokenType.Array)
+            {
+                return t.Value.ToString(Formatting.None);
+            }
+            throw new NotImplementedException($"Type {t.Name}: {t.Value.Type} not supported in variables");
         }
 
         private static string GetTaskType(JObject obj)

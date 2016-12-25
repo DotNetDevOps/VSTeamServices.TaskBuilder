@@ -87,7 +87,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
                 if (handler is IConsoleReader)
                 {
                     var consoleReader = handler as IConsoleReader;
-                    consoleReader.OnConsoleParsing(parser, args, options, prop);
+                   consoleReader.OnConsoleParsing(parser, args, options, prop);
                 }
 
                 if (handler is IConsoleReader<T>)

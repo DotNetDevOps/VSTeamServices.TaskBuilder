@@ -221,6 +221,9 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
                     case "boolean":
                         writer.WriteLine($"$arg{i} =  if (!${input.Name})				{{ '' }} else {{ '--{input.Name}'}}");
                         break;
+                    case "stringArray":
+                        writer.WriteLine($"$arg{i} =  if ([String]::IsNullOrEmpty(${input.Name}))				{{ '' }} else {{ @('--{input.Name}',			(${input.Name}))  }}");
+                        break;
                     default:
                         Console.WriteLine($"{input.Type} was not known for powershell generation.");
                         break;
