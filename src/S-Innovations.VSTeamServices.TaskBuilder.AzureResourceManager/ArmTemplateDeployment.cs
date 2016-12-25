@@ -305,11 +305,11 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
         {
             if (t.Value.Type == JTokenType.String)
             {
-                return t.Value.ToString(Formatting.None);
+                return t.Value.ToObject<string>();
             }
             if(t.Value.Type == JTokenType.Array)
             {
-                return t.Value.ToString(Formatting.None);
+                return string.Join(" ", t.Value.Select(token => $"\"{token.ToObject<string>()}\""));
             }
             throw new NotImplementedException($"Type {t.Name}: {t.Value.Type} not supported in variables");
         }
