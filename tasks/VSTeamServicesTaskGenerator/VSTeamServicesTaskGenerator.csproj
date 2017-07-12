@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net452</TargetFramework>
-    <AssemblyName>UpdateNugetPackageVersionsTask</AssemblyName>
+    <AssemblyName>VSTeamServicesTaskGenerator</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>UpdateNugetPackageVersionsTask</PackageId>
+    <PackageId>VSTeamServicesTaskGenerator</PackageId>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -15,14 +15,6 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\S-Innovations.VSTeamServices.TaskBuilder\S-Innovations.VSTeamServices.TaskBuilder.csproj" />

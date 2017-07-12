@@ -39,7 +39,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
             foreach (var field in variablesOrParameters.OfType<JProperty>())
                 CreateProperty(tb, field.Name, field.Value, $"{prefix}{field.Name}");
 
-            Type objectType = tb.CreateType();
+            Type objectType = tb.CreateTypeInfo();
             return objectType;
         }
 
@@ -47,7 +47,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.AzureResourceManager
         {
             var typeSignature = "MyDynamicType";
             var an = new AssemblyName(typeSignature);
-            AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
+            AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
             TypeBuilder tb = moduleBuilder.DefineType(typeSignature
                                 , TypeAttributes.Public |

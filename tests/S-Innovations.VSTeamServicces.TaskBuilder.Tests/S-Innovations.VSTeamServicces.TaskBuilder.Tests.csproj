@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>2.0.0-pre</VersionPrefix>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>S-Innovations.VSTeamServicces.TaskBuilder.Tests</AssemblyName>
+    <PackageId>S-Innovations.VSTeamServicces.TaskBuilder.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\S-Innovations.VSTeamServices.TaskBuilder\S-Innovations.VSTeamServices.TaskBuilder.csproj" />
+    <ProjectReference Include="..\..\src\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager.csproj" />
+    <ProjectReference Include="..\..\src\S-Innovations.VSTeamServices.TaskBuilder.KeyVault\S-Innovations.VSTeamServices.TaskBuilder.KeyVault.csproj" />
+    <ProjectReference Include="..\..\tasks\VSTeamServicesTaskGenerator\VSTeamServicesTaskGenerator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.8-rc" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.0.8-rc" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

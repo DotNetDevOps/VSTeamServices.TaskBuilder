@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".licenses", ".licenses", "{9870EC89-D141-4DEB-8048-E3064E7CD42F}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,24 +10,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".licenses", ".licenses", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tasks", "Tasks", "{ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServices.TaskBuilder", "src\S-Innovations.VSTeamServices.TaskBuilder\S-Innovations.VSTeamServices.TaskBuilder.xproj", "{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager", "src\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager.xproj", "{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServices.TaskBuilder.KeyVault", "src\S-Innovations.VSTeamServices.TaskBuilder.KeyVault\S-Innovations.VSTeamServices.TaskBuilder.KeyVault.xproj", "{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DE301744-A5BB-49FE-AEED-98ABCD4F47F2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "S-Innovations.VSTeamServicces.TaskBuilder.Tests", "tests\S-Innovations.VSTeamServicces.TaskBuilder.Tests\S-Innovations.VSTeamServicces.TaskBuilder.Tests.xproj", "{425FD48D-D8AD-4CA9-922E-7EBF669A216E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{739201E4-4BB2-480B-A122-A9BF153F1C0F}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UpdateNugetPackageVersionsTask", "tasks\UpdateNugetPackageVersionsTask\UpdateNugetPackageVersionsTask.xproj", "{DF7CBF86-86DB-4982-A2F9-A1DED546841E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.VSTeamServices.TaskBuilder", "src\S-Innovations.VSTeamServices.TaskBuilder\S-Innovations.VSTeamServices.TaskBuilder.csproj", "{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "VSTeamServicesTaskGenerator", "tasks\VSTeamServicesTaskGenerator\VSTeamServicesTaskGenerator.xproj", "{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager", "src\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager\S-Innovations.VSTeamServices.TaskBuilder.AzureResourceManager.csproj", "{A20A96B3-FBEE-4FE4-BC1E-A4BDDF79A674}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.VSTeamServices.TaskBuilder.KeyVault", "src\S-Innovations.VSTeamServices.TaskBuilder.KeyVault\S-Innovations.VSTeamServices.TaskBuilder.KeyVault.csproj", "{E3E644DE-F6E5-4E03-861B-CBEF5D8CA499}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.VSTeamServicces.TaskBuilder.Tests", "tests\S-Innovations.VSTeamServicces.TaskBuilder.Tests\S-Innovations.VSTeamServicces.TaskBuilder.Tests.csproj", "{425FD48D-D8AD-4CA9-922E-7EBF669A216E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateNugetPackageVersionsTask", "tasks\UpdateNugetPackageVersionsTask\UpdateNugetPackageVersionsTask.csproj", "{DF7CBF86-86DB-4982-A2F9-A1DED546841E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTeamServicesTaskGenerator", "tasks\VSTeamServicesTaskGenerator\VSTeamServicesTaskGenerator.csproj", "{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,5 +64,8 @@ Global
 		{425FD48D-D8AD-4CA9-922E-7EBF669A216E} = {DE301744-A5BB-49FE-AEED-98ABCD4F47F2}
 		{DF7CBF86-86DB-4982-A2F9-A1DED546841E} = {ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}
 		{4CEBDB8C-8202-49B9-B95E-98A7CF5A669B} = {ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E99FA042-897A-4905-97F9-1E4564D5BBDA}
 	EndGlobalSection
 EndGlobal

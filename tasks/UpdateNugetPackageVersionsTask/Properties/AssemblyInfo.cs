@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("D9BAFED4-AB18-4F58-968D-86655B4D2CE9")]
 
-[assembly: AssemblyInformationalVersion("1.0.25")]
+[assembly: AssemblyInformationalVersion("1.0.26")]
 [assembly: AssemblyTitle("Update Nuget Packages Versions")]
 [assembly: AssemblyDescription("After building nuget packages that references eachother, the versions can be updated to match the references nuget packages.")]
 [assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]

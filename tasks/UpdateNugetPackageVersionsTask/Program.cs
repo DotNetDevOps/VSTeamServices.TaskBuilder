@@ -19,7 +19,7 @@ using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
 namespace UpdateNugetPackageVersionsTask
 {
 
-    [EntryPoint("Deploying $(appServiceName)")]
+    [EntryPoint("Updating Nuget Packages")]
     [Group(DisplayName = "Publish Packages", Name = "Feed", isExpanded = true)]
     public class UpdateNugetPackageVersionsTaskOptions
     {
