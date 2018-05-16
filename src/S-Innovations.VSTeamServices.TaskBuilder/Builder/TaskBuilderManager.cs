@@ -274,7 +274,16 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
 
             }
             writer.WriteLine("$cwd =  Split-Path -parent $PSCommandPath");
-            writer.WriteLine($"$CMD = \"$cwd/{program}\"");
+
+            if (program.EndsWith(".exe"))
+            {
+                writer.WriteLine($"$CMD = \"$cwd/{program}\"");
+            }
+            else
+            {
+                writer.WriteLine($"$CMD = \"dotnet $cwd/{program}\"");
+            }
+
             writer.Write("& $CMD");
             writer.Write(sb.ToString());
 
