@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.0-pre</VersionPrefix>
-    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+    <Version>2.0.0</Version>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>S-Innovations.VSTeamServices.TaskBuilder.KeyVault</AssemblyName>
     <PackageId>S-Innovations.VSTeamServices.TaskBuilder.KeyVault</PackageId>
     <PackageTags>S-Innovations;VSTS</PackageTags>
@@ -30,16 +30,6 @@
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="2.3.2" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <Reference Include="System.Runtime" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Threading.Tasks" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+ 
 
 </Project>
