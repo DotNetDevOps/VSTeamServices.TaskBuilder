@@ -15,6 +15,7 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <RootNamespace>SInnovations.VSTeamServices.TaskBuilder</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
