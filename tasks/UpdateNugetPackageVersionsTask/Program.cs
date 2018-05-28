@@ -36,6 +36,10 @@ namespace UpdateNugetPackageVersionsTask
         [Option("PackageFolder",Default ="$(Build.StagingDirectory)")]
         public string PackageFolder { get; set; }
 
+      
+        [Option("PackageFeatureName", Default ="pre")]
+        public string PackageFeatureName { get; set; }
+
     }
     class Program
     {
@@ -48,7 +52,7 @@ namespace UpdateNugetPackageVersionsTask
 
             Console.WriteLine(String.Join(", ", nugets));
 
-            string appendversion = "pre-" + Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER").Split('_').Last().Replace(".", "");//context.GetValue(this.PrereleaseName);
+            string appendversion = $"{options.PackageFeatureName}-" + Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER").Split('_').Last().Replace(".", "");//context.GetValue(this.PrereleaseName);
             var idx = appendversion.LastIndexOf('-');
             var rev = appendversion.Substring(idx + 7).PadLeft(2, '0');
             appendversion = string.Format("{0}{1}{2}", appendversion.Substring(0, idx), appendversion.Substring(idx, 7), rev);
