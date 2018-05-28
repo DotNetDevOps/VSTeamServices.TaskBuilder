@@ -136,6 +136,15 @@ namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
                 TaskBuilder.BuildSelf();
                 Environment.Exit(0);
             }
+
+
+            if(args.Length >1 && args.First() == "--publish")
+            {
+                TaskBuilder.BuildSelf();
+                TaskBuilder.PublishSelf(args).Wait();
+                Environment.Exit(0);
+            }
+
             Console.WriteLine(string.Join(" ", args));
             args = MoveBoolsLast(args);
             Console.WriteLine(Message);

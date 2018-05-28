@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -50,6 +51,53 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
             var pathToExe = Path.Combine(Path.GetDirectoryName(path), System.AppDomain.CurrentDomain.FriendlyName);
 
             BuildFromAssembly(assembly, pathToExe);
+        }
+
+        public static async Task PublishSelf(string[] args)
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            string codeBase = assembly.CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path1 = Uri.UnescapeDataString(uri.Path);
+            string folder = Path.GetDirectoryName(path1);
+            var ms = new MemoryStream();
+            using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
+            {
+
+                foreach (var file in Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories))
+                {
+                    var entry = zip.CreateEntry(file.Substring(folder.Length + 1));
+                    using (var ws = entry.Open())
+                    {
+                        using (var fs = File.OpenRead(file))
+                        {
+                            await fs.CopyToAsync(ws);
+                        }
+                    }
+
+                }
+            }
+
+           var bytes= ms.ToArray();
+           
+
+
+            var http = new HttpClient();
+            var encodedCred = Convert.ToBase64String(Encoding.ASCII.GetBytes(":" + args[2]));
+
+            var taskId = JToken.Parse(File.ReadAllText(Path.Combine(folder, "task.json"))).SelectToken("$.id").ToString();
+
+            var req = new HttpRequestMessage(HttpMethod.Put, $"{args[1]}/_apis/distributedtask/tasks/{taskId}?api-version=2.0-preview");
+            req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", encodedCred);
+        //    req.Headers.Add("Content-Range", $"bytes 0-${bytes.Length-1}/${bytes.Length}");
+
+            req.Content = new ByteArrayContent(bytes);
+            req.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            req.Content.Headers.ContentRange = new System.Net.Http.Headers.ContentRangeHeaderValue(0, bytes.Length - 1, bytes.Length);
+
+
+            var rsp = await http.SendAsync(req);
+            rsp.EnsureSuccessStatusCode();            
         }
         public static JObject BuildFromAssembly(Assembly assembly,string pathToDll)
         {
@@ -151,6 +199,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
             AppDomain.CurrentDomain.AssemblyResolve -= loader;
             return obj;
         }
+
+       
 
         private const string PSStringType = "String";
         private static string PSType(string type)
