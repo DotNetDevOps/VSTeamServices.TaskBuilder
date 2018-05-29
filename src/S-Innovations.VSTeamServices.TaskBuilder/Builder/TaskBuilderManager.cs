@@ -85,7 +85,10 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
             var http = new HttpClient();
             var encodedCred = Convert.ToBase64String(Encoding.ASCII.GetBytes(":" + args[2]));
 
-            var taskId = JToken.Parse(File.ReadAllText(Path.Combine(folder, "task.json"))).SelectToken("$.id").ToString();
+            var taskjson = File.ReadAllText(Path.Combine(folder, "task.json"));
+            Console.WriteLine(taskjson);
+
+            var taskId = JToken.Parse(taskjson).SelectToken("$.id").ToString();
 
             var req = new HttpRequestMessage(HttpMethod.Put, $"{args[1]}/_apis/distributedtask/tasks/{taskId}?api-version=2.0-preview");
             req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", encodedCred);
@@ -97,7 +100,12 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
 
 
             var rsp = await http.SendAsync(req);
-            rsp.EnsureSuccessStatusCode();            
+            if(rsp.StatusCode != System.Net.HttpStatusCode.Created)
+            {
+                Console.WriteLine(await rsp.Content.ReadAsStringAsync());
+            }
+   
+            
         }
         public static JObject BuildFromAssembly(Assembly assembly,string pathToDll)
         {

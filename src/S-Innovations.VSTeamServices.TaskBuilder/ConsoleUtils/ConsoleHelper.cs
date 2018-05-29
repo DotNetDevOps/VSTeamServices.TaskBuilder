@@ -140,7 +140,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils
 
             if(args.Length >1 && args.First() == "--publish")
             {
-                TaskBuilder.BuildSelf();
+       
                 TaskBuilder.PublishSelf(args).Wait();
                 Environment.Exit(0);
             }

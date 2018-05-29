@@ -46,7 +46,7 @@ namespace UpdateNugetPackageVersionsTask
         static void Main(string[] args)
         {
 
-         
+            
 
             var options = ConsoleHelper.ParseAndHandleArguments<UpdateNugetPackageVersionsTaskOptions>("Running Nuget Package Version Updates", args);
 
