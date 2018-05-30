@@ -233,6 +233,10 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
 
         private static void WriteOauthBrokerPowershell(StreamWriter writer, string program, TaskInput[] inputs)
         {
+
+            if (!program.EndsWith(".dll"))
+                program += ".dll";
+
             //writer.WriteLine($"[CmdletBinding(DefaultParameterSetName = 'None')]");
             //writer.WriteLine("param");
             //writer.WriteLine("(");
@@ -339,6 +343,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
             }
             else
             {
+               
+
                 writer.WriteLine($"$CMD = \"dotnet $cwd/{program}\"");
             }
 
