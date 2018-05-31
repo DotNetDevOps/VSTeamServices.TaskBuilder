@@ -14,7 +14,7 @@ using System.Xml.Linq;
 [assembly: Guid("D9BAFED4-AB18-4F58-968D-86655B4D2CE9")]
 [assembly: AssemblyTitle("Updating Nuget Packages")]
 [assembly: AssemblyDescription("Updating Nuget Packages")]
-[assembly: AssemblyInformationalVersion("1.0.32")]  //Update to do new release
+[assembly: AssemblyInformationalVersion("1.0.33")]  //Update to do new release
 [assembly: AssemblyConfiguration("Utility")]
 [assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
@@ -55,11 +55,11 @@ namespace UpdateNugetPackageVersionsTask
             Console.WriteLine(String.Join(", ", nugets));
 
             string appendversion = $"{options.PackageFeatureName}-" + Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER").Split('_').Last().Replace(".", "");//context.GetValue(this.PrereleaseName);
-            var idx = appendversion.LastIndexOf('-');
-            var rev = appendversion.Substring(idx + 7).PadLeft(2, '0');
-            appendversion = string.Format("{0}{1}{2}", appendversion.Substring(0, idx), appendversion.Substring(idx, 7), rev);
+           // var idx = appendversion.LastIndexOf('-');
+           // var rev = appendversion.Substring(idx + 7).PadLeft(2, '0');
+          //  appendversion = string.Format("{0}{1}{2}", appendversion.Substring(0, idx), appendversion.Substring(idx, 7), rev);
             Console.WriteLine(appendversion);
-            var nugetpath = string.Format(@"{0}\Agent\Worker\Tools\nuget.exe", Environment.GetEnvironmentVariable("AGENT_HOMEDIRECTORY"));
+          //  var nugetpath = string.Format(@"{0}\Agent\Worker\Tools\nuget.exe", Environment.GetEnvironmentVariable("AGENT_HOMEDIRECTORY"));
 
 
             foreach (var path in nugets)
