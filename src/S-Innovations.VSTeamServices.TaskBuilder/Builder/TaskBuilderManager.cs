@@ -347,7 +347,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
                
 
                 writer.WriteLine($"$CMD = \"dotnet\"");
-                writer.Write($"& $cwd/{program} $CMD");
+                writer.Write($"& $CMD $cwd/{program}");
             }
 
            

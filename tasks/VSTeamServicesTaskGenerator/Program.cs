@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 
-[assembly: AssemblyInformationalVersion("1.0.16")]
+[assembly: AssemblyInformationalVersion("1.0.17")]
 [assembly: AssemblyTitle("VisualStudio TeamServices Task Generator")]
 [assembly: AssemblyDescription("Generate Visual Studio Team Services Tasks using S-Innovations Task Library")]
 [assembly: AssemblyCompany("S-Innovations v/Poul Kjeldager Sørensen")]
