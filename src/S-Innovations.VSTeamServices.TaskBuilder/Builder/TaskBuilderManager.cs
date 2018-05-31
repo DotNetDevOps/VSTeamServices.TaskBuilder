@@ -340,15 +340,17 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Builder
             if (program.EndsWith(".exe"))
             {
                 writer.WriteLine($"$CMD = \"$cwd/{program}\"");
+                writer.Write("& $CMD");
             }
             else
             {
                
 
-                writer.WriteLine($"$CMD = \"dotnet $cwd/{program}\"");
+                writer.WriteLine($"$CMD = \"dotnet\"");
+                writer.Write($"& $cwd/{program} $CMD");
             }
 
-            writer.Write("& $CMD");
+           
             writer.Write(sb.ToString());
 
            
