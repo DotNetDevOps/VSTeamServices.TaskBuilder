@@ -14,7 +14,7 @@ using System.Xml.Linq;
 [assembly: Guid("D9BAFED4-AB18-4F58-968D-86655B4D2CE9")]
 [assembly: AssemblyTitle("Updating Nuget Packages")]
 [assembly: AssemblyDescription("Updating Nuget Packages")]
-[assembly: AssemblyInformationalVersion("1.0.34")]  //Update to do new release
+[assembly: AssemblyInformationalVersion("1.0.35")]  //Update to do new release
 [assembly: AssemblyConfiguration("Utility")]
 [assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
@@ -65,7 +65,7 @@ namespace UpdateNugetPackageVersionsTask
             //  var nugetpath = string.Format(@"{0}\Agent\Worker\Tools\nuget.exe", Environment.GetEnvironmentVariable("AGENT_HOMEDIRECTORY"));
             if (!string.IsNullOrEmpty(options.BuildMetadata))
             {
-                appendversion += "+" + options.BuildMetadata;
+                appendversion += "-" + options.BuildMetadata;
             }
 
             foreach (var path in nugets)

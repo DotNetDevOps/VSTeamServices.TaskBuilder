@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
-    <PackageReference Include="Humanizer.Core" Version="2.2.0" />
+    <PackageReference Include="Humanizer.Core" Version="2.3.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="S-Innovations.Azure.ResourceManager" Version="2.0.0-pre-2017071205" />
     <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
