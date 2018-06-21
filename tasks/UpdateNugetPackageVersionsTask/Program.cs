@@ -14,7 +14,7 @@ using System.Xml.Linq;
 [assembly: Guid("D9BAFED4-AB18-4F58-968D-86655B4D2CE9")]
 [assembly: AssemblyTitle("Updating Nuget Packages")]
 [assembly: AssemblyDescription("Updating Nuget Packages")]
-[assembly: AssemblyInformationalVersion("1.0.35")]  //Update to do new release
+[assembly: AssemblyInformationalVersion("1.0.36")]  //Update to do new release
 [assembly: AssemblyConfiguration("Utility")]
 [assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
@@ -43,13 +43,16 @@ namespace UpdateNugetPackageVersionsTask
         [Option("BuildMetadata")]
         public string BuildMetadata { get; set; }
 
+        [Option("StripVersionPostfixes")]
+        public bool StripVersionPostfixes { get; set; }
+
     }
     class Program
     {
         static void Main(string[] args)
         {
 
-            
+
 
             var options = ConsoleHelper.ParseAndHandleArguments<UpdateNugetPackageVersionsTaskOptions>("Running Nuget Package Version Updates", args);
 
@@ -57,16 +60,7 @@ namespace UpdateNugetPackageVersionsTask
 
             Console.WriteLine(String.Join(", ", nugets));
 
-            string appendversion = $"{options.PackageFeatureName}-" + Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER").Split('_').Last().Replace(".", "");//context.GetValue(this.PrereleaseName);
-           // var idx = appendversion.LastIndexOf('-');
-           // var rev = appendversion.Substring(idx + 7).PadLeft(2, '0');
-          //  appendversion = string.Format("{0}{1}{2}", appendversion.Substring(0, idx), appendversion.Substring(idx, 7), rev);
-            Console.WriteLine(appendversion);
-            //  var nugetpath = string.Format(@"{0}\Agent\Worker\Tools\nuget.exe", Environment.GetEnvironmentVariable("AGENT_HOMEDIRECTORY"));
-            if (!string.IsNullOrEmpty(options.BuildMetadata))
-            {
-                appendversion += "-" + options.BuildMetadata;
-            }
+            string appendversion = GetAppendVersion(options);
 
             foreach (var path in nugets)
             {
@@ -99,10 +93,17 @@ namespace UpdateNugetPackageVersionsTask
                         var metadata = doc.Root.Elements().First(e => e.Name.LocalName == "metadata");
                         var version = metadata.Elements().First(e => e.Name.LocalName == "version");
 
-                        if (version.Value.EndsWith(appendversion.Split('-').First()))
-                            version.Value += "-" + string.Join("", appendversion.Split('-').Skip(1));
-                        else
-                            version.Value += "-" + appendversion;
+                        if (options.StripVersionPostfixes)
+                        {
+                            version.Value = version.Value.Split('-').First();
+                        }
+                            else
+                        {
+                            if (version.Value.EndsWith(appendversion.Split('-').First()))
+                                version.Value += "-" + string.Join("", appendversion.Split('-').Skip(1));
+                            else
+                                version.Value += "-" + appendversion;
+                        }
 
                         var dependencies = metadata.Elements().First(e => e.Name.LocalName == "dependencies");
 
@@ -114,15 +115,22 @@ namespace UpdateNugetPackageVersionsTask
                         foreach (var dependency in dependencies.Descendants().Where(n => n.Name.LocalName == "dependency").Where(e => IncludedInBuild(e, othernugets)))
                         {
                             var dependencyElement = othernugets.FirstOrDefault(s => s.StartsWith(dependency.Attribute("id").Value) &&
-                    char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
+                                char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
 
                             var otherversion = Path.GetFileNameWithoutExtension(dependencyElement.Substring(dependency.Attribute("id").Value.Length)).Trim('.');
                             var attr = dependency.Attribute("version");
 
-                            if (otherversion.Split('-').Last().Equals(appendversion.Split('-').First()))
-                                attr.Value = otherversion + "-" + string.Join("-", appendversion.Split('-').Skip(1));
+                            if (options.StripVersionPostfixes)
+                            {
+                                attr.Value = otherversion;
+                            }
                             else
-                                attr.Value = otherversion + "-" + appendversion;
+                            {
+                                if (otherversion.Split('-').Last().Equals(appendversion.Split('-').First()))
+                                    attr.Value = otherversion + "-" + string.Join("-", appendversion.Split('-').Skip(1));
+                                else
+                                    attr.Value = otherversion + "-" + appendversion;
+                            }
 
                         }
 
@@ -147,6 +155,25 @@ namespace UpdateNugetPackageVersionsTask
                 //}
 
             }
+        }
+
+        private static string GetAppendVersion(UpdateNugetPackageVersionsTaskOptions options)
+        {
+            if (options.StripVersionPostfixes)
+                return string.Empty;
+
+            string appendversion = $"{options.PackageFeatureName}-" + Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER").Split('_').Last().Replace(".", "");//context.GetValue(this.PrereleaseName);
+                                                                                                                                                                 // var idx = appendversion.LastIndexOf('-');
+                                                                                                                                                                 // var rev = appendversion.Substring(idx + 7).PadLeft(2, '0');
+                                                                                                                                                                 //  appendversion = string.Format("{0}{1}{2}", appendversion.Substring(0, idx), appendversion.Substring(idx, 7), rev);
+            Console.WriteLine(appendversion);
+            //  var nugetpath = string.Format(@"{0}\Agent\Worker\Tools\nuget.exe", Environment.GetEnvironmentVariable("AGENT_HOMEDIRECTORY"));
+            if (!string.IsNullOrEmpty(options.BuildMetadata))
+            {
+                appendversion += "-" + options.BuildMetadata;
+            }
+
+            return appendversion;
         }
 
         private static bool IncludedInBuild(XElement e, IEnumerable<string> othernugets)
