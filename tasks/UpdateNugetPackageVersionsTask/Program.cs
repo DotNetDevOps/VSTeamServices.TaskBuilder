@@ -1,4 +1,20 @@
-﻿using CommandLine;
+﻿/*
+ * Copyright 2016 S-Innovations v/Poul K. Sørensen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using CommandLine;
 using SInnovations.VSTeamServices.TaskBuilder.Attributes;
 using SInnovations.VSTeamServices.TaskBuilder.ConsoleUtils;
 using System;
@@ -14,7 +30,7 @@ using System.Xml.Linq;
 [assembly: Guid("D9BAFED4-AB18-4F58-968D-86655B4D2CE9")]
 [assembly: AssemblyTitle("Updating Nuget Packages")]
 [assembly: AssemblyDescription("Updating Nuget Packages")]
-[assembly: AssemblyInformationalVersion("1.0.37")]  //Update to do new release
+[assembly: AssemblyInformationalVersion("1.0.38")]  //Update to do new release
 [assembly: AssemblyConfiguration("Utility")]
 [assembly: AssemblyCompany("S-Innovations v/Poul K. Sørensen")]
 [assembly: AssemblyProduct("UpdateNugetPackageVersionsTask")]
@@ -105,33 +121,36 @@ namespace UpdateNugetPackageVersionsTask
                                 version.Value += "-" + appendversion;
                         }
 
-                        var dependencies = metadata.Elements().First(e => e.Name.LocalName == "dependencies");
-
-
-                        Console.WriteLine((string.Join("\n", dependencies.Descendants().Where(n => n.Name.LocalName == "dependency").Select(e =>
-                             string.Format("{0}.{1}.nupkg", e.Attribute("id").Value, e.Attribute("version").Value)))));
-
-
-                        foreach (var dependency in dependencies.Descendants().Where(n => n.Name.LocalName == "dependency").Where(e => IncludedInBuild(e, othernugets)))
+                        if (metadata.Elements().Any(e => e.Name.LocalName == "dependencies"))
                         {
-                            var dependencyElement = othernugets.FirstOrDefault(s => s.StartsWith(dependency.Attribute("id").Value) &&
-                                char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
+                            var dependencies = metadata.Elements().First(e => e.Name.LocalName == "dependencies");
 
-                            var otherversion = Path.GetFileNameWithoutExtension(dependencyElement.Substring(dependency.Attribute("id").Value.Length)).Trim('.');
-                            var attr = dependency.Attribute("version");
 
-                            if (options.StripVersionPostfixes)
+                            Console.WriteLine(string.Join("\n", dependencies.Descendants().Where(n => n.Name.LocalName == "dependency").Select(e =>
+                                 string.Format("{0}.{1}.nupkg", e.Attribute("id").Value, e.Attribute("version").Value))));
+
+
+                            foreach (var dependency in dependencies.Descendants().Where(n => n.Name.LocalName == "dependency").Where(e => IncludedInBuild(e, othernugets)))
                             {
-                                attr.Value = otherversion;
-                            }
-                            else
-                            {
-                                if (otherversion.Split('-').Last().Equals(appendversion.Split('-').First()))
-                                    attr.Value = otherversion + "-" + string.Join("-", appendversion.Split('-').Skip(1));
+                                var dependencyElement = othernugets.FirstOrDefault(s => s.StartsWith(dependency.Attribute("id").Value) &&
+                                    char.IsNumber(Path.GetFileNameWithoutExtension(s.Substring(dependency.Attribute("id").Value.Length)).Replace(".", "").First()));
+
+                                var otherversion = Path.GetFileNameWithoutExtension(dependencyElement.Substring(dependency.Attribute("id").Value.Length)).Trim('.');
+                                var attr = dependency.Attribute("version");
+
+                                if (options.StripVersionPostfixes)
+                                {
+                                    attr.Value = otherversion;
+                                }
                                 else
-                                    attr.Value = otherversion + "-" + appendversion;
-                            }
+                                {
+                                    if (otherversion.Split('-').Last().Equals(appendversion.Split('-').First()))
+                                        attr.Value = otherversion + "-" + string.Join("-", appendversion.Split('-').Skip(1));
+                                    else
+                                        attr.Value = otherversion + "-" + appendversion;
+                                }
 
+                            }
                         }
 
                     }
