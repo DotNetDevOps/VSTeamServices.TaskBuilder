@@ -1,6 +1,6 @@
-extensions: .cs
+﻿extensions: .cs
 /*
- * Copyright 2016 S-Innovations v/Poul K. S�rensen
+ * Copyright 2016 S-Innovations v/Poul K. Sørensen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

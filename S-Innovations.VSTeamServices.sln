@@ -3,16 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".licenses", ".licenses", "{9870EC89-D141-4DEB-8048-E3064E7CD42F}"
-	ProjectSection(SolutionItems) = preProject
-		default.licenseheader = default.licenseheader
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tasks", "Tasks", "{ABCEA0C8-E5C0-4038-86B7-8A81DB9700CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DE301744-A5BB-49FE-AEED-98ABCD4F47F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{739201E4-4BB2-480B-A122-A9BF153F1C0F}"
+	ProjectSection(SolutionItems) = preProject
+		package.props = package.props
+		S-Innovations.VSTeamServices.sln.licenseheader = S-Innovations.VSTeamServices.sln.licenseheader
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S-Innovations.VSTeamServices.TaskBuilder", "src\S-Innovations.VSTeamServices.TaskBuilder\S-Innovations.VSTeamServices.TaskBuilder.csproj", "{A9594CD7-307C-4B85-9522-35F8F4B9A1B3}"
 EndProject
