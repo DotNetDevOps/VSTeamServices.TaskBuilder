@@ -1,17 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*
+ * Copyright 2016 S-Innovations v/Poul K. Sørensen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using CommandLine;
 using Newtonsoft.Json.Linq;
 using SInnovations.VSTeamServices.TaskBuilder.Attributes;
 using SInnovations.VSTeamServices.TaskBuilder.Models;
 using SInnovations.VSTeamServices.TaskBuilder.ResourceTypes;
+using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 
 namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 {
@@ -27,7 +39,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
             if (isSecret)
             {
                 Console.WriteLine($"##vso[task.setvariable variable={variableName};issecret=true;]{value}");
-            }else
+            }
+            else
             {
                 SetVariable(variableName, value);
             }
@@ -47,7 +60,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
         }
         public static JToken GetTaskDefaultValue(PropertyInfo property)
         {
-          
+
             object defaultValue = property.GetCustomAttribute<BaseAttribute>()?.Default ??
                 (property.GetCustomAttribute<DefaultValueAttribute>()?.Value) ?? "";
             if (property.PropertyType == typeof(bool))
@@ -92,7 +105,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 
             var p = (rp == null ? ip?.Required ?? false : true);
 
-            return (r == null ? i?.Required ??p: true);
+            return (r == null ? i?.Required ?? p : true);
         }
         public static int GetOrder(PropertyInfo property)
         {
@@ -102,8 +115,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
         public static TaskGeneratorResult GetTaskInputs(Type programOptionsType, PropertyInfo parent)
         {
 
-       
-            
+
+
             var properties = programOptionsType.GetProperties(
                 BindingFlags.Public | BindingFlags.FlattenHierarchy | BindingFlags.Instance).Where(p =>
                     Attribute.IsDefined(p, typeof(OptionAttribute)) || Attribute.IsDefined(p, typeof(DisplayAttribute)))
@@ -115,7 +128,7 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
             var results = new TaskGeneratorResult();
             foreach (var property in properties)
             {
-                
+
 
                 var groupName = GetGroupName(property);
                 var resourceType = GetResourcetype(property);
@@ -143,14 +156,15 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
                 var sd = property.GetCustomAttribute<SourceDefinitionAttribute>();
                 if (sd != null)
                 {
-                    try {
+                    try
+                    {
                         if (!sd.Ignore)
                         {
                             results.SourceDefinitions.Add(new SourceDefinition
                             {
                                 Endpoint = sd.Endpoint,
-                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ?? 
-                                    parent?.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService ?? 
+                                AuthKey = (Activator.CreateInstance(sd.ConnectedService ??
+                                    parent?.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService ??
                                     programOptionsType.GetCustomAttribute<SourceDefinitionAttribute>()?.ConnectedService) as AuthKeyProvider).GetAuthKey(),
                                 Selector = sd.Selector,
                                 KeySelector = sd.KeySelector ?? "",
@@ -158,7 +172,8 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
                             });
                         }
 
-                    } catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
                     }
@@ -166,27 +181,31 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 
                 if (typeof(ITaskInputFactory).IsAssignableFrom(resourceType))
                 {
-                    ITaskInputFactory fac= null;
+                    ITaskInputFactory fac = null;
                     if (resourceType == property.PropertyType)
                     {
                         fac = property.GetValue(Activator.CreateInstance(programOptionsType)) as ITaskInputFactory;
                     }
-                    if(fac==null && resourceType.IsGenericTypeDefinition && resourceType == property.PropertyType.GetGenericTypeDefinition())
+                    if (fac == null && resourceType.IsGenericTypeDefinition && resourceType == property.PropertyType.GetGenericTypeDefinition())
                     {
                         fac = property.GetValue(Activator.CreateInstance(programOptionsType)) as ITaskInputFactory;
                     }
-                    if(fac==null)
+                    if (fac == null)
                     {
                         fac = Activator.CreateInstance(resourceType) as ITaskInputFactory;
                     }
                     var tasks = fac.GenerateTasks(groupName, defaultTask, property);
                     foreach (var iput in tasks.Inputs)
+                    {
                         iput.GroupName = iput.GroupName ?? defaultTask.GroupName;
+                    }
+
                     results.Add(tasks);
 
                 }
-                else {
-                    defaultTask.Type = GetTaskInputType(resourceType,property);
+                else
+                {
+                    defaultTask.Type = GetTaskInputType(resourceType, property);
                     results.Inputs.Add(defaultTask);
                 }
 
@@ -208,22 +227,25 @@ namespace SInnovations.VSTeamServices.TaskBuilder.Tasks
 
 
 
-       // private static string GlobPathString = typeof(GlobPath).ToString();
+        // private static string GlobPathString = typeof(GlobPath).ToString();
 
         private static string GetTaskInputType(Type propertyType, PropertyInfo propertyInfo)
         {
             propertyType = propertyType ?? propertyInfo.PropertyType;
 
-            if(propertyType == typeof(string) && propertyInfo.GetCustomAttribute< SourceDefinitionAttribute >() != null)
+            if (propertyType == typeof(string) && propertyInfo.GetCustomAttribute<SourceDefinitionAttribute>() != null)
             {
                 return "pickList";
             }
 
             switch (propertyType.ToString())
-            {  
+            {
                 case "System.String":
                     if (Attribute.IsDefined(propertyInfo, typeof(MultilineAttribute)))
+                    {
                         return "multiLine";
+                    }
+
                     return "string";
                 case "System.Boolean":
                 case "System.Nullable`1[System.Boolean]":
